@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TheInspector Audit Report — 2026-03-24</title>
+<style>
+  :root {
+    --bg: #0f172a; --surface: #1e293b; --surface2: #334155;
+    --text: #e2e8f0; --muted: #94a3b8; --border: #475569;
+    --red: #ef4444; --orange: #f97316; --yellow: #eab308;
+    --green: #22c55e; --blue: #3b82f6; --purple: #a855f7;
+    --grade-d: #f97316;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 1200px; margin: 0 auto; }
+  h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+  h2 { font-size: 1.5rem; margin: 2rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--border); }
+  h3 { font-size: 1.1rem; margin: 1.2rem 0 0.5rem; }
+  h4 { font-size: 1rem; margin: 1rem 0 0.4rem; color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+  th, td { padding: 0.6rem 0.8rem; text-align: left; border: 1px solid var(--border); }
+  th { background: var(--surface2); font-weight: 600; }
+  tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem; margin: 1rem 0; }
+  .card-p1 { border-left: 4px solid var(--red); }
+  .card-p2 { border-left: 4px solid var(--orange); }
+  .card-p3 { border-left: 4px solid var(--yellow); }
+  .card-p4 { border-left: 4px solid var(--blue); }
+  .card-fixed { border-left: 4px solid var(--green); background: rgba(34,197,94,0.05); }
+  .badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 700; }
+  .badge-p1 { background: var(--red); color: #fff; }
+  .badge-p2 { background: var(--orange); color: #fff; }
+  .badge-p3 { background: var(--yellow); color: #000; }
+  .badge-p4 { background: var(--blue); color: #fff; }
+  .badge-new { background: var(--purple); color: #fff; }
+  .grade-badge { font-size: 4rem; font-weight: 900; display: inline-block; width: 100px; height: 100px; line-height: 100px; text-align: center; border-radius: 50%; background: var(--grade-d); color: #fff; }
+  .meta { color: var(--muted); font-size: 0.9rem; }
+  .scorecards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1rem 0; }
+  .scorecard { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; text-align: center; }
+  .scorecard .number { font-size: 2rem; font-weight: 800; }
+  .scorecard .label { font-size: 0.85rem; color: var(--muted); }
+  .sc-red .number { color: var(--red); }
+  .sc-orange .number { color: var(--orange); }
+  .sc-yellow .number { color: var(--yellow); }
+  .sc-blue .number { color: var(--blue); }
+  .sc-green .number { color: var(--green); }
+  code { background: var(--surface2); padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.9em; }
+  .bar-container { background: var(--surface2); border-radius: 4px; height: 20px; margin: 0.3rem 0; }
+  .bar-fill { height: 100%; border-radius: 4px; background: var(--green); text-align: center; font-size: 0.75rem; line-height: 20px; color: #fff; font-weight: 700; }
+  .risk-matrix { width: 100%; }
+  .risk-matrix td { text-align: center; min-width: 100px; }
+  .risk-matrix .cell-hot { background: rgba(239,68,68,0.2); }
+  .risk-matrix .cell-warm { background: rgba(249,115,22,0.15); }
+  .risk-matrix .cell-mild { background: rgba(234,179,8,0.1); }
+  .risk-matrix .cell-cool { background: rgba(59,130,246,0.1); }
+  ul { margin-left: 1.2rem; margin-bottom: 0.5rem; }
+  li { margin-bottom: 0.3rem; }
+  .specialist-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+  .file { color: var(--blue); font-family: monospace; font-size: 0.9em; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- SECTION 1: HEADER                                            -->
+<!-- ============================================================ -->
+<header style="display:flex; align-items:center; gap:2rem; margin-bottom:2rem;">
+  <div class="grade-badge">D</div>
+  <div>
+    <h1>TheInspector — System Health Audit</h1>
+    <p class="meta">Branch: <code>cycle/run-1774393303054-e598271b</code> &nbsp;|&nbsp; Date: 2026-03-24 &nbsp;|&nbsp; Mode: Full codebase (post-work audit)</p>
+    <p class="meta">Audited task: "Using this image as the spec, build a plan to implement, split into tasks, build it"</p>
+  </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- SECTION 2: SCORECARDS                                        -->
+<!-- ============================================================ -->
+<h2>2. Scorecards</h2>
+<div class="scorecards">
+  <div class="scorecard sc-red"><div class="number">8</div><div class="label">P1 Critical</div></div>
+  <div class="scorecard sc-orange"><div class="number">19</div><div class="label">P2 High</div></div>
+  <div class="scorecard sc-yellow"><div class="number">14</div><div class="label">P3 Medium</div></div>
+  <div class="scorecard sc-blue"><div class="number">7</div><div class="label">P4 Low</div></div>
+  <div class="scorecard sc-green"><div class="number">100%</div><div class="label">Spec Coverage</div></div>
+  <div class="scorecard"><div class="number">5</div><div class="label">Static Specialists</div></div>
+  <div class="scorecard"><div class="number">0</div><div class="label">Fixed (first audit)</div></div>
+  <div class="scorecard"><div class="number">48</div><div class="label">Total Findings</div></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 3: EXECUTIVE SUMMARY                                 -->
+<!-- ============================================================ -->
+<h2>3. Executive Summary</h2>
+<div class="card">
+<ol>
+  <li><strong>No authentication or authorization exists.</strong> Every API endpoint is open to any network caller. Work items can be created, modified, deleted, and transitioned by anyone. This is the single highest-impact finding (RED-001, RED-002).</li>
+  <li><strong>All multi-step database writes lack transactions.</strong> Proposals, reviews, transitions, and updates can leave the system in an inconsistent state if a crash or concurrent request occurs. Concurrent requests can bypass the state machine (CHAOS-003–005).</li>
+  <li><strong>No graceful shutdown or crash handlers.</strong> The Node.js process has no SIGTERM handler and no uncaught exception handler. A crash loses in-flight work with no diagnostic logging (CHAOS-001, CHAOS-002).</li>
+  <li><strong>Database indexes are entirely missing.</strong> Every query on every table performs a full table scan. Change history, filtering, and dedup will degrade linearly as data grows (PERF-001, PERF-002).</li>
+  <li><strong>Frontend/backend types have diverged.</strong> No shared types layer exists. Nullable fields, field names, and type shapes differ — causing silent runtime bugs (QO-001, QO-002, QO-005).</li>
+</ol>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4: SCOPE & ENVIRONMENT                               -->
+<!-- ============================================================ -->
+<h2>4. Scope &amp; Environment</h2>
+<div class="card">
+<table>
+  <tr><th>Attribute</th><th>Value</th></tr>
+  <tr><td>Audit mode</td><td>Full codebase — first audit, no prior baseline</td></tr>
+  <tr><td>Commits audited</td><td>2 (bootstrap + initial commit)</td></tr>
+  <tr><td>Backend service</td><td>DOWN — all specialists ran static mode</td></tr>
+  <tr><td>Frontend service</td><td>DOWN — all specialists ran static mode</td></tr>
+  <tr><td>Tech stack</td><td>Express.js + Knex + better-sqlite3 / React 19 + Vite + Tailwind</td></tr>
+  <tr><td>Specialists deployed</td><td>red-teamer, quality-oracle, performance-profiler, chaos-monkey, dependency-auditor</td></tr>
+  <tr><td>Dynamic tests run</td><td>0 (services unavailable)</td></tr>
+  <tr><td>Data caveats</td><td>No live exploit verification possible; all security findings are code-path confirmed only</td></tr>
+</table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 5: TREND                                             -->
+<!-- ============================================================ -->
+<h2>5. Trend</h2>
+<div class="card">
+  <p><strong>First audit — no baseline.</strong> This report establishes the initial baseline. Future audits will compare against these findings to track FIXED / STILL OPEN / REGRESSED / NEW.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 6: SPECIALIST REPORTS                                -->
+<!-- ============================================================ -->
+<h2>6. Specialist Reports</h2>
+<div class="specialist-grid">
+  <div class="card">
+    <h3>Red Teamer</h3>
+    <p class="meta">Mode: Static | Verdict: <span style="color:var(--red)">FAIL</span></p>
+    <p><span class="badge badge-p1">P1: 3</span> <span class="badge badge-p2">P2: 4</span> <span class="badge badge-p3">P3: 3</span></p>
+    <p class="meta" style="margin-top:0.5rem">Focus: Auth, access control, injection, webhooks</p>
+  </div>
+  <div class="card">
+    <h3>Quality Oracle</h3>
+    <p class="meta">Mode: Static | Verdict: <span style="color:var(--orange)">WARN</span></p>
+    <p><span class="badge badge-p1">P1: 2</span> <span class="badge badge-p2">P2: 3</span> <span class="badge badge-p3">P3: 2</span> <span class="badge badge-p4">P4: 2</span></p>
+    <p class="meta" style="margin-top:0.5rem">Spec coverage: 100% | Type drift found</p>
+  </div>
+  <div class="card">
+    <h3>Performance Profiler</h3>
+    <p class="meta">Mode: Static | Verdict: <span style="color:var(--orange)">WARN</span></p>
+    <p><span class="badge badge-p1">P1: 1</span> <span class="badge badge-p2">P2: 5</span> <span class="badge badge-p3">P3: 2</span> <span class="badge badge-p4">P4: 1</span></p>
+    <p class="meta" style="margin-top:0.5rem">Endpoints analysed: 15</p>
+  </div>
+  <div class="card">
+    <h3>Chaos Monkey</h3>
+    <p class="meta">Mode: Static | Verdict: <span style="color:var(--red)">FAIL</span></p>
+    <p><span class="badge badge-p1">P1: 2</span> <span class="badge badge-p2">P2: 3</span> <span class="badge badge-p3">P3: 4</span> <span class="badge badge-p4">P4: 2</span></p>
+    <p class="meta" style="margin-top:0.5rem">Invariants checked: 12</p>
+  </div>
+  <div class="card">
+    <h3>Dependency Auditor</h3>
+    <p class="meta">Mode: Static | Verdict: <span style="color:var(--yellow)">PASS (with warnings)</span></p>
+    <p><span class="badge badge-p2">P2: 4</span> <span class="badge badge-p3">P3: 3</span> <span class="badge badge-p4">P4: 2</span></p>
+    <p class="meta" style="margin-top:0.5rem">CVEs: 0 critical, 0 high, 4 moderate</p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 7: RE-VERIFICATION SUMMARY                           -->
+<!-- ============================================================ -->
+<h2>7. Re-Verification Summary</h2>
+<div class="card">
+  <p><strong>First audit — no prior findings to re-verify.</strong> All 48 findings are NEW.</p>
+  <table>
+    <tr><th>Status</th><th>Count</th></tr>
+    <tr><td style="color:var(--green)">FIXED</td><td>0</td></tr>
+    <tr><td style="color:var(--yellow)">STILL OPEN</td><td>0</td></tr>
+    <tr><td style="color:var(--red)">REGRESSED</td><td>0</td></tr>
+    <tr><td style="color:var(--purple)">NEW</td><td>48</td></tr>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 8: CROSS-REFERENCE MAP                               -->
+<!-- ============================================================ -->
+<h2>8. Cross-Reference Map</h2>
+<div class="card">
+  <p>Root causes that span multiple specialists — fixing one root cause resolves findings from 2+ specialists.</p>
+  <table>
+    <tr><th>Root Cause</th><th>Affected Findings</th><th>Fix Impact</th></tr>
+    <tr>
+      <td><strong>No authentication middleware</strong></td>
+      <td>RED-001, RED-002, RED-003, RED-004, RED-005, RED-006, RED-008, RED-009</td>
+      <td>Implementing JWT auth + RBAC resolves or downgrades 8 security findings. Prerequisite for all access control.</td>
+    </tr>
+    <tr>
+      <td><strong>No database transactions</strong></td>
+      <td>CHAOS-003, CHAOS-004, CHAOS-005, CHAOS-008, CHAOS-009</td>
+      <td>Wrapping multi-step writes in <code>db.transaction()</code> resolves 5 state invariant findings. Single pattern change across workflowService + workItemService + intakeService.</td>
+    </tr>
+    <tr>
+      <td><strong>No shared types layer</strong></td>
+      <td>QO-001, QO-002, QO-005, QO-007</td>
+      <td>Creating <code>Source/Shared/types.ts</code> as single source of truth resolves 4 type-drift findings. Prevents future divergence.</td>
+    </tr>
+    <tr>
+      <td><strong>Missing database indexes</strong></td>
+      <td>PERF-001, PERF-002</td>
+      <td>One migration adding 6-8 indexes resolves all index findings. O(n) → O(log n) for every query path.</td>
+    </tr>
+    <tr>
+      <td><strong>No request body size limit</strong></td>
+      <td>RED-007, CHAOS-006, PERF-009</td>
+      <td>Single line change: <code>express.json({ limit: '16kb' })</code> resolves 3 findings across 3 specialists.</td>
+    </tr>
+    <tr>
+      <td><strong>Unbounded list queries</strong></td>
+      <td>PERF-004, PERF-005, CHAOS-011, QO-004</td>
+      <td>Adding pagination to list endpoints resolves 4 findings. Also fulfills FR-WF-012 acceptance criteria.</td>
+    </tr>
+    <tr>
+      <td><strong>No process lifecycle handlers</strong></td>
+      <td>CHAOS-001, CHAOS-002</td>
+      <td>Adding SIGTERM + uncaughtException handlers in server.ts resolves 2 P1 findings. ~20 lines of code.</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 9: P1 FINDINGS                                       -->
+<!-- ============================================================ -->
+<h2>9. P1 Findings (8)</h2>
+
+<div class="card card-p1">
+  <h3><span class="badge badge-p1">P1</span> <span class="badge badge-new">NEW</span> RED-001: Complete Absence of Authentication</h3>
+  <p class="file">Source/Backend/src/app.ts</p>
+  <p><strong>Category:</strong> auth-bypass | <strong>Confirmation:</strong> Confirmed (code path)</p>
+  <p><strong>Exploit scenario:</strong></p>
+  <ol>
+    <li>Attacker sends <code>GET /api/work-items</code> — receives all work items, no credentials required</li>
+    <li>Attacker sends <code>DELETE /api/work-items/&lt;uuid&gt;</code> — item permanently deleted</li>
+    <li>No JWT, session, API key, or any authentication mechanism exists in the entire codebase</li>
+  </ol>
+  <p><strong>Impact:</strong> Full read/write/delete access to all data for any network caller</p>
+  <p><strong>Recommendation:</strong> Add JWT Bearer authentication middleware before all <code>/api/*</code> routes</p>
+</div>
+
+<div class="card card-p1">
+  <h3><span class="badge badge-p1">P1</span> <span class="badge badge-new">NEW</span> RED-002: No Authorization / Access Control</h3>
+  <p class="file">Source/Backend/src/app.ts, all route files</p>
+  <p><strong>Category:</strong> privilege-escalation | <strong>Confirmation:</strong> Confirmed (code path)</p>
+  <p><strong>Exploit scenario:</strong></p>
+  <ol>
+    <li>No concept of users, roles, or permissions exists</li>
+    <li>Any caller can approve/reject work items, transition pipeline stages, delete items</li>
+    <li>No ownership model — all items globally mutable</li>
+  </ol>
+  <p><strong>Impact:</strong> Any network client has full admin capabilities</p>
+  <p><strong>Recommendation:</strong> Implement RBAC with roles (submitter, reviewer, admin). Protect transition/review/delete endpoints.</p>
+</div>
+
+<div class="card card-p1">
+  <h3><span class="badge badge-p1">P1</span> <span class="badge badge-new">NEW</span> RED-003: Prometheus Metrics Publicly Exposed</h3>
+  <p class="file">Source/Backend/src/app.ts:19</p>
+  <p><strong>Category:</strong> domain-specific | <strong>Confirmation:</strong> Confirmed (code path)</p>
+  <p><strong>Exploit scenario:</strong></p>
+  <ol>
+    <li>Attacker sends <code>GET /metrics</code></li>
+    <li>Receives internal runtime metrics (heap, event loop, routes, status codes)</li>
+    <li>Reveals infrastructure details useful for targeted attacks</li>
+  </ol>
+  <p><strong>Recommendation:</strong> Restrict <code>/metrics</code> to internal network or require auth</p>
+</div>
+
+<div class="card card-p1">
+  <h3><span class="badge badge-p1">P1</span> <span class="badge badge-new">NEW</span> QO-001: Frontend WorkItem Type Missing Nullable Fields</h3>
+  <p class="file">Source/Frontend/src/types/index.ts:39,42</p>
+  <p><strong>Category:</strong> architecture-violation</p>
+  <p><strong>Detail:</strong> Frontend declares <code>description: string</code> and <code>queue: string</code> as non-nullable. Backend returns <code>null</code> for these fields on newly-created items. Frontend components will crash or render "null" text.</p>
+  <p><strong>Recommendation:</strong> Create <code>Source/Shared/types.ts</code> as single source of truth. Align nullable fields.</p>
+</div>
+
+<div class="card card-p1">
+  <h3><span class="badge badge-p1">P1</span> <span class="badge badge-new">NEW</span> QO-002: Review Type Field Name Mismatch</h3>
+  <p class="file">Source/Frontend/src/types/index.ts:76</p>
+  <p><strong>Category:</strong> architecture-violation</p>
+  <p><strong>Detail:</strong> Backend uses <code>reviewed_at</code>; frontend uses <code>created_at</code>. The frontend field will always be <code>undefined</code> at runtime because the API never sends <code>created_at</code>.</p>
+  <p><strong>Recommendation:</strong> Change frontend <code>Review.created_at</code> to <code>reviewed_at</code>. Audit all usages.</p>
+</div>
+
+<div class="card card-p1">
+  <h3><span class="badge badge-p1">P1</span> <span class="badge badge-new">NEW</span> PERF-001: Missing Index on change_history.work_item_id</h3>
+  <p class="file">Source/Backend/src/migrations/001_initial_schema.ts:40-54</p>
+  <p><strong>Category:</strong> missing-index</p>
+  <p><strong>Detail:</strong> FK column <code>work_item_id</code> has no index. Every history fetch is a full table scan. Table grows unboundedly. Also missing on <code>proposals.work_item_id</code> and <code>reviews.work_item_id</code>.</p>
+  <p><strong>Recommendation:</strong> Add indexes: <code>idx_change_history_work_item_id</code>, <code>idx_proposals_work_item_id</code>, <code>idx_reviews_work_item_id</code></p>
+</div>
+
+<div class="card card-p1">
+  <h3><span class="badge badge-p1">P1</span> <span class="badge badge-new">NEW</span> CHAOS-001: No Graceful Shutdown Handlers</h3>
+  <p class="file">Source/Backend/src/server.ts:12</p>
+  <p><strong>Category:</strong> recovery-failure</p>
+  <p><strong>Detail:</strong> No <code>SIGTERM</code> or <code>SIGINT</code> handlers. Process exits hard with no cleanup — in-flight requests dropped, DB connections leaked, SQLite WAL not flushed.</p>
+  <p><strong>Recommendation:</strong> Add signal handlers: <code>server.close()</code> → <code>db.destroy()</code> → <code>process.exit(0)</code></p>
+</div>
+
+<div class="card card-p1">
+  <h3><span class="badge badge-p1">P1</span> <span class="badge badge-new">NEW</span> CHAOS-002: No uncaughtException / unhandledRejection Handlers</h3>
+  <p class="file">Source/Backend/src/server.ts:1</p>
+  <p><strong>Category:</strong> recovery-failure</p>
+  <p><strong>Detail:</strong> Neither handler exists. Bugs outside Express middleware crash silently with no structured log output for post-mortem.</p>
+  <p><strong>Recommendation:</strong> Add <code>process.on('uncaughtException')</code> and <code>process.on('unhandledRejection')</code> with <code>logger.fatal()</code></p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 10: RISK MATRIX                                      -->
+<!-- ============================================================ -->
+<h2>10. Risk Matrix</h2>
+<table class="risk-matrix">
+  <tr>
+    <th></th>
+    <th>Zero-precondition<br>(no auth needed)</th>
+    <th>Authenticated<br>(any role)</th>
+    <th>Privileged<br>(specific role)</th>
+    <th>Admin</th>
+    <th>Physical</th>
+  </tr>
+  <tr>
+    <td><strong>P1</strong></td>
+    <td class="cell-hot">RED-001, RED-002, RED-003, PERF-001, CHAOS-001, CHAOS-002</td>
+    <td class="cell-hot">QO-001, QO-002</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><strong>P2</strong></td>
+    <td class="cell-warm">RED-004, RED-005, RED-006, RED-007, PERF-004, PERF-005</td>
+    <td class="cell-warm">CHAOS-003, CHAOS-004, CHAOS-005, QO-003, QO-004, QO-005</td>
+    <td class="cell-mild">DEP-002, DEP-003, DEP-004, DEP-005</td>
+    <td class="cell-mild">PERF-002, PERF-003, PERF-006</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><strong>P3</strong></td>
+    <td class="cell-mild">RED-008, RED-009, RED-010</td>
+    <td class="cell-mild">CHAOS-006, CHAOS-007, CHAOS-008, CHAOS-009</td>
+    <td class="cell-cool">DEP-001, DEP-006, DEP-007, QO-006, QO-007</td>
+    <td class="cell-cool">PERF-007, PERF-008</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><strong>P4</strong></td>
+    <td></td>
+    <td class="cell-cool">PERF-009, CHAOS-010, CHAOS-011</td>
+    <td class="cell-cool">QO-008, QO-009</td>
+    <td class="cell-cool">DEP-008, DEP-009</td>
+    <td></td>
+  </tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- SECTION 11: SPEC COVERAGE                                    -->
+<!-- ============================================================ -->
+<h2>11. Spec Coverage</h2>
+<div class="card">
+  <h3>Coverage: 100% (15/15 FRs traced)</h3>
+  <div class="bar-container"><div class="bar-fill" style="width:100%">100%</div></div>
+  <p>All 15 functional requirements (FR-WF-001 through FR-WF-015) have <code>// Verifies:</code> traceability in source or test files.</p>
+
+  <h4>Top Uncovered / Partially Implemented Requirements</h4>
+  <table>
+    <tr><th>FR</th><th>Issue</th><th>Finding</th></tr>
+    <tr><td>FR-WF-012</td><td>Pagination specified in acceptance criteria but not implemented</td><td>QO-004</td></tr>
+    <tr><td>FR-WF-015</td><td>OpenTelemetry tracing mandated by CLAUDE.md but absent</td><td>QO-003</td></tr>
+  </table>
+  <p class="meta">Note: While traceability is 100%, some traced requirements have incomplete acceptance criteria coverage as shown above.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 12: LATENCY BASELINES                                -->
+<!-- ============================================================ -->
+<h2>12. Latency Baselines</h2>
+<div class="card">
+  <p><strong>Mode: Static — no live measurements available.</strong> Services were DOWN during audit.</p>
+  <table>
+    <tr><th>Endpoint</th><th>Budget (p95)</th><th>p50</th><th>p95</th><th>p99</th><th>Status</th></tr>
+    <tr><td>GET /api/work-items</td><td>500ms</td><td>—</td><td>—</td><td>—</td><td>Not measured (static only)</td></tr>
+    <tr><td>GET /api/work-items/:id</td><td>200ms</td><td>—</td><td>—</td><td>—</td><td>Not measured</td></tr>
+    <tr><td>POST /api/work-items</td><td>200ms</td><td>—</td><td>—</td><td>—</td><td>Not measured</td></tr>
+    <tr><td>GET /api/dashboard/board</td><td>500ms</td><td>—</td><td>—</td><td>—</td><td>Not measured</td></tr>
+    <tr><td>POST /api/intake/zendesk</td><td>200ms</td><td>—</td><td>—</td><td>—</td><td>Not measured</td></tr>
+    <tr><td>GET /health</td><td>50ms</td><td>—</td><td>—</td><td>—</td><td>Not measured</td></tr>
+  </table>
+  <p class="meta">Static analysis flagged: missing indexes (PERF-001, PERF-002), unbounded queries (PERF-004, PERF-005), N+1 patterns (PERF-003, PERF-006) — all will impact latency at scale.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 13: P2 FINDINGS                                      -->
+<!-- ============================================================ -->
+<h2>13. P2 Findings (19)</h2>
+<table>
+  <tr><th>ID</th><th>Category</th><th>Title</th><th>File</th><th>Status</th></tr>
+  <tr><td>RED-004</td><td>injection</td><td>Mass Assignment in PATCH Work Item</td><td class="file">workItemService.ts:142</td><td><span class="badge badge-new">NEW</span></td></tr>
+  <tr><td>RED-005</td><td>auth-bypass</td><td>Webhook Endpoints Have No Signature Verification</td><td class="file">routes/intake.ts</td><td><span class="badge badge-new">NEW</span></td></tr>
+  <tr><td>RED-006</td><td>domain-specific</td><td>Missing CORS Policy</td><td class="file">app.ts</td><td><span class="badge badge-new">NEW</span></td></tr>
+  <tr><td>RED-007</td><td>domain-specific</td><td>No Request Body Size Limit</td><td class="file">app.ts:12</td><td><span class="badge badge-new">NEW</span></td></tr>
+  <tr><td>QO-003</td><td>architecture-violation</td><td>OpenTelemetry Not Implemented</td><td class="file">middleware/requestLogger.ts</td><td><span class="badge badge-new">NEW</span></td></tr>
+  <tr><td>QO-004</td><td>spec-drift</td><td>Pagination Missing (FR-WF-012)</td><td class="file">pages/BacklogView.tsx</td><td><span class="badge badge-new">NEW</span></td></tr>
+  <tr><td>QO-005</td><td>architecture-violation</td><td>No Shared Types Layer</td><td class="file">Frontend/src/types/index.ts</td><td><span class="badge badge-new">NEW</span></td></tr>
+  <tr><td>PERF-002</td><td>missing-index</td><td>No Index on work_items Filter Columns</td><td class="file">migrations/001_initial_schema.ts</td><td><span class="badge badge-new">NEW</span></td></tr>
+  <tr><td>PERF-003</td><td>n-plus-1</td><td>N+1 INSERT in changeHistoryService.recordChanges()</td><td class="file">changeHistoryService.ts:51</td><td><span class="badge badge-new">NEW</span></td></tr>
+  <tr><td>PERF-004</td><td>unbounded</td><td>GET /api/work-items Has No LIMIT / Pagination</td><td class="file">workItemService.ts:67</td><td><span class="badge badge-new">NEW</span></td></tr>
+  <tr><td>PERF-005</td><td>unbounded</td><td>GET /api/dashboard/board Fetches All Rows</td><td class="file">dashboardService.ts:54</td><td><span class="badge badge-new">NEW</span></td></tr>
+  <tr><td>PERF-006</td><td>n-plus-1</td><td>Double Change History Fetch on GET /:id/history</td><td class="file">routes/workItems.ts:97</td><td><span class="badge badge-new">NEW</span></td></tr>
+  <tr><td>CHAOS-003</td><td>state-invariant</td><td>propose() Has No Transaction</td><td class="file">workflowService.ts:96</td><td><span class="badge badge-new">NEW</span></td></tr>
+  <tr><td>CHAOS-004</td><td>state-invariant</td><td>review() Has No Transaction — Stuck State Risk</td><td class="file">workflowService.ts:158</td><td><span class="badge badge-new">NEW</span></td></tr>
+  <tr><td>CHAOS-005</td><td>state-invariant</td><td>transition() Not Atomic — Race Condition</td><td class="file">workflowService.ts:35</td><td><span class="badge badge-new">NEW</span></td></tr>
+  <tr><td>DEP-002</td><td>outdated</td><td>uuid@9.0.1 — 4 Majors Behind</td><td class="file">Backend/package.json</td><td><span class="badge badge-new">NEW</span></td></tr>
+  <tr><td>DEP-003</td><td>outdated</td><td>better-sqlite3@9.6.0 — 3 Majors Behind</td><td class="file">Backend/package.json</td><td><span class="badge badge-new">NEW</span></td></tr>
+  <tr><td>DEP-004</td><td>outdated</td><td>pino@8.21.0 — 2 Majors Behind</td><td class="file">Backend/package.json</td><td><span class="badge badge-new">NEW</span></td></tr>
+  <tr><td>DEP-005</td><td>outdated</td><td>vitest@1.6.1 — 3 Majors Behind (+ CVE chain)</td><td class="file">Backend/package.json</td><td><span class="badge badge-new">NEW</span></td></tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- SECTION 14: FIXED FINDINGS                                   -->
+<!-- ============================================================ -->
+<h2>14. Fixed Findings</h2>
+<div class="card card-fixed">
+  <p><strong>First audit — no prior findings. Nothing to mark as fixed.</strong></p>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 15: RECOMMENDATIONS                                  -->
+<!-- ============================================================ -->
+<h2>15. Recommendations</h2>
+
+<h3 style="color:var(--red);">Block Deployment</h3>
+<table>
+  <tr><th>#</th><th>Action</th><th>Resolves</th><th>Effort</th></tr>
+  <tr><td>1</td><td>Implement JWT authentication middleware + RBAC</td><td>RED-001, RED-002, RED-003, RED-008</td><td>L (2-3 days)</td></tr>
+  <tr><td>2</td><td>Add SIGTERM/SIGINT + uncaughtException handlers</td><td>CHAOS-001, CHAOS-002</td><td>S (1 hour)</td></tr>
+  <tr><td>3</td><td>Wrap all multi-step DB writes in transactions</td><td>CHAOS-003, CHAOS-004, CHAOS-005, CHAOS-009</td><td>M (half day)</td></tr>
+  <tr><td>4</td><td>Add database indexes on FK and filter columns</td><td>PERF-001, PERF-002</td><td>S (1 hour)</td></tr>
+</table>
+
+<h3 style="color:var(--orange);">This Sprint</h3>
+<table>
+  <tr><th>#</th><th>Action</th><th>Resolves</th><th>Effort</th></tr>
+  <tr><td>5</td><td>Create Source/Shared/types.ts — single type source of truth</td><td>QO-001, QO-002, QO-005, QO-007</td><td>M (half day)</td></tr>
+  <tr><td>6</td><td>Add webhook signature verification (Zendesk HMAC, API key for integrations)</td><td>RED-005</td><td>M (half day)</td></tr>
+  <tr><td>7</td><td>Add pagination to list endpoints</td><td>PERF-004, PERF-005, QO-004, CHAOS-011</td><td>M (half day)</td></tr>
+  <tr><td>8</td><td>Add CORS middleware + helmet security headers</td><td>RED-006</td><td>S (1 hour)</td></tr>
+  <tr><td>9</td><td>Set express.json body limit + field-level validation</td><td>RED-007, CHAOS-006, PERF-009</td><td>S (1 hour)</td></tr>
+  <tr><td>10</td><td>Add UNIQUE constraint on (source, external_id) for intake dedup</td><td>CHAOS-008</td><td>S (1 hour)</td></tr>
+  <tr><td>11</td><td>Add whitelist to PATCH update fields</td><td>RED-004</td><td>S (1 hour)</td></tr>
+</table>
+
+<h3 style="color:var(--yellow);">Next Sprint</h3>
+<table>
+  <tr><th>#</th><th>Action</th><th>Resolves</th><th>Effort</th></tr>
+  <tr><td>12</td><td>Implement OpenTelemetry tracing</td><td>QO-003</td><td>M (1 day)</td></tr>
+  <tr><td>13</td><td>Add rate limiting middleware</td><td>RED-009</td><td>S (2 hours)</td></tr>
+  <tr><td>14</td><td>Fix double history fetch + unnecessary re-SELECT</td><td>PERF-006, PERF-007</td><td>S (2 hours)</td></tr>
+  <tr><td>15</td><td>Batch insert for change history</td><td>PERF-003</td><td>S (1 hour)</td></tr>
+  <tr><td>16</td><td>Enable SQLite WAL mode</td><td>PERF-008</td><td>S (30 min)</td></tr>
+  <tr><td>17</td><td>Add DB liveness check to /health</td><td>CHAOS-007</td><td>S (30 min)</td></tr>
+  <tr><td>18</td><td>Add .gitignore</td><td>RED-010</td><td>S (15 min)</td></tr>
+</table>
+
+<h3>Backlog</h3>
+<table>
+  <tr><th>#</th><th>Action</th><th>Resolves</th><th>Effort</th></tr>
+  <tr><td>19</td><td>Upgrade outdated dependencies (uuid, better-sqlite3, pino, vitest)</td><td>DEP-002, DEP-003, DEP-004, DEP-005</td><td>M (1 day)</td></tr>
+  <tr><td>20</td><td>Upgrade Express to v5, TypeScript to v6</td><td>DEP-006, DEP-007</td><td>M (1 day)</td></tr>
+  <tr><td>21</td><td>Delete dead code (Backlog.tsx stub)</td><td>QO-006</td><td>S (5 min)</td></tr>
+  <tr><td>22</td><td>Add meaningful API client tests</td><td>QO-009</td><td>S (2 hours)</td></tr>
+  <tr><td>23</td><td>Add Knex connection timeout</td><td>CHAOS-010</td><td>S (15 min)</td></tr>
+  <tr><td>24</td><td>Align @types/node versions</td><td>DEP-009</td><td>S (15 min)</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- SECTION 16: P3/P4 SUMMARY                                    -->
+<!-- ============================================================ -->
+<h2>16. P3/P4 Summary</h2>
+<table>
+  <tr><th>ID</th><th>Severity</th><th>Category</th><th>Title</th><th>File</th></tr>
+  <tr><td>RED-008</td><td><span class="badge badge-p3">P3</span></td><td>domain-specific</td><td>Client-Controlled changedBy — Audit Log Forgery</td><td class="file">routes/workItems.ts:119</td></tr>
+  <tr><td>RED-009</td><td><span class="badge badge-p3">P3</span></td><td>domain-specific</td><td>No Rate Limiting</td><td class="file">app.ts</td></tr>
+  <tr><td>RED-010</td><td><span class="badge badge-p3">P3</span></td><td>crypto</td><td>No .gitignore — .env File Risk</td><td class="file">Source/Backend/.env</td></tr>
+  <tr><td>QO-006</td><td><span class="badge badge-p3">P3</span></td><td>pattern-violation</td><td>Dead Stub Backlog.tsx Component</td><td class="file">pages/Backlog.tsx</td></tr>
+  <tr><td>QO-007</td><td><span class="badge badge-p3">P3</span></td><td>architecture-violation</td><td>ChangeEntry.new_value Nullable Mismatch</td><td class="file">Frontend/types/index.ts</td></tr>
+  <tr><td>PERF-007</td><td><span class="badge badge-p3">P3</span></td><td>n-plus-1</td><td>Unnecessary re-SELECT After Update/Transition</td><td class="file">workItemService.ts:165</td></tr>
+  <tr><td>PERF-008</td><td><span class="badge badge-p3">P3</span></td><td>resource-leak</td><td>SQLite WAL Mode Not Configured</td><td class="file">config/database.ts</td></tr>
+  <tr><td>CHAOS-006</td><td><span class="badge badge-p3">P3</span></td><td>resource-leak</td><td>No Request Body Size Limit</td><td class="file">app.ts:12</td></tr>
+  <tr><td>CHAOS-007</td><td><span class="badge badge-p3">P3</span></td><td>recovery-failure</td><td>/health Does Not Probe DB</td><td class="file">app.ts:22</td></tr>
+  <tr><td>CHAOS-008</td><td><span class="badge badge-p3">P3</span></td><td>state-invariant</td><td>Intake Dedup TOCTOU Race</td><td class="file">intakeService.ts:40</td></tr>
+  <tr><td>CHAOS-009</td><td><span class="badge badge-p3">P3</span></td><td>state-invariant</td><td>update() Non-Atomic Read-Then-Write</td><td class="file">workItemService.ts:119</td></tr>
+  <tr><td>DEP-001</td><td><span class="badge badge-p3">P3</span></td><td>cve</td><td>esbuild GHSA-67mh (dev only)</td><td class="file">Backend/package.json</td></tr>
+  <tr><td>DEP-006</td><td><span class="badge badge-p3">P3</span></td><td>outdated</td><td>Express 1 Major Behind</td><td class="file">Backend/package.json</td></tr>
+  <tr><td>DEP-007</td><td><span class="badge badge-p3">P3</span></td><td>outdated</td><td>TypeScript 1 Major Behind</td><td class="file">Both package.json</td></tr>
+  <tr><td>QO-008</td><td><span class="badge badge-p4">P4</span></td><td>pattern-violation</td><td>Frontend Logger Uses console.* Internally</td><td class="file">utils/logger.ts</td></tr>
+  <tr><td>QO-009</td><td><span class="badge badge-p4">P4</span></td><td>untested</td><td>API Client Tests Are Shallow</td><td class="file">__tests__/apiClient.test.ts</td></tr>
+  <tr><td>PERF-009</td><td><span class="badge badge-p4">P4</span></td><td>resource-leak</td><td>No Request Body Size Limit (Express default)</td><td class="file">app.ts:12</td></tr>
+  <tr><td>CHAOS-010</td><td><span class="badge badge-p4">P4</span></td><td>missing-timeout</td><td>No Knex Query/Connection Timeout</td><td class="file">config/database.ts</td></tr>
+  <tr><td>CHAOS-011</td><td><span class="badge badge-p4">P4</span></td><td>resource-leak</td><td>getBoard() Fetches All Rows</td><td class="file">dashboardService.ts:54</td></tr>
+  <tr><td>DEP-008</td><td><span class="badge badge-p4">P4</span></td><td>supply-chain</td><td>better-sqlite3 Native Build Script (expected)</td><td class="file">Backend/package.json</td></tr>
+  <tr><td>DEP-009</td><td><span class="badge badge-p4">P4</span></td><td>outdated</td><td>@types/node Version Mismatch</td><td class="file">Both package.json</td></tr>
+</table>
+
+<hr style="margin:3rem 0 1rem; border-color:var(--border);">
+<p class="meta" style="text-align:center;">Generated by TheInspector | 2026-03-24 | Branch: cycle/run-1774393303054-e598271b</p>
+
+</body>
+</html>

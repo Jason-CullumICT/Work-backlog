@@ -1,0 +1,110 @@
+{
+  "team": "TheInspector",
+  "next_run_number": 2,
+  "runs": {
+    "run-20260324-232923": {
+      "number": 1,
+      "pipeline": {
+        "id": "run-20260324-232923",
+        "status": "complete",
+        "started_at": "2026-03-24T23:29:23Z",
+        "task_title": "Post-work System Health Audit",
+        "completed_at": "2026-03-24T23:37:55Z"
+      },
+      "stages": [],
+      "agents": {
+        "team_leader": {
+          "status": "complete",
+          "started_at": "2026-03-24T23:29:23Z",
+          "name": "Team Leader",
+          "model": "sonnet",
+          "completed_at": "2026-03-24T23:37:55Z",
+          "duration_s": 512,
+          "verdict": "passed",
+          "metrics": {
+            "grade": "D",
+            "p1_total": 8,
+            "p2_total": 19,
+            "p3_total": 14,
+            "p4_total": 7,
+            "total_findings": 48,
+            "spec_coverage_pct": 100
+          }
+        },
+        "red_teamer": {
+          "status": "complete",
+          "started_at": "2026-03-24T23:30:18Z",
+          "name": "Red Teamer",
+          "model": "sonnet",
+          "completed_at": "2026-03-24T23:32:03Z",
+          "duration_s": 105,
+          "verdict": "passed",
+          "metrics": {
+            "p1_count": 3,
+            "p2_count": 4,
+            "p3_count": 3
+          }
+        },
+        "quality_oracle": {
+          "status": "complete",
+          "started_at": "2026-03-24T23:30:32Z",
+          "name": "Quality Oracle",
+          "model": "sonnet",
+          "completed_at": "2026-03-24T23:32:28Z",
+          "duration_s": 116,
+          "verdict": "passed",
+          "metrics": {
+            "spec_coverage_pct": 100,
+            "p1_count": 2,
+            "p2_count": 4
+          }
+        },
+        "performance_profiler": {
+          "status": "complete",
+          "started_at": "2026-03-24T23:30:45Z",
+          "name": "Performance Profiler",
+          "model": "sonnet",
+          "completed_at": "2026-03-24T23:31:49Z",
+          "duration_s": 64,
+          "verdict": "passed",
+          "metrics": {
+            "p1_count": 1,
+            "p2_count": 6,
+            "endpoints_analysed": 15
+          }
+        },
+        "chaos_monkey": {
+          "status": "complete",
+          "started_at": "2026-03-24T23:30:55Z",
+          "name": "Chaos Monkey",
+          "model": "sonnet",
+          "completed_at": "2026-03-24T23:32:02Z",
+          "duration_s": 67,
+          "verdict": "passed",
+          "metrics": {
+            "p1_count": 2,
+            "p2_count": 3,
+            "invariants_checked": 12
+          }
+        },
+        "dependency_auditor": {
+          "status": "complete",
+          "started_at": "2026-03-24T23:31:03Z",
+          "name": "Dependency Auditor",
+          "model": "haiku",
+          "completed_at": "2026-03-24T23:32:44Z",
+          "duration_s": 101,
+          "verdict": "passed",
+          "metrics": {
+            "cves_critical": 0,
+            "cves_high": 0,
+            "cves_moderate": 4,
+            "outdated_major": 8
+          }
+        }
+      },
+      "feedback_loops": [],
+      "updated_at": "2026-03-24T23:37:55Z"
+    }
+  }
+}
