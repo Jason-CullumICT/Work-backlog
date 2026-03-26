@@ -6,6 +6,8 @@ import {
   WorkItemComplexity,
   WorkItemRoute,
   WorkItemStatus,
+  Workflow,
+  RuleOperator,
 } from '../../../Shared/types/workflow';
 import * as store from '../store/workItemStore';
 import { buildChangeEntry } from '../models/WorkItem';
@@ -143,6 +145,55 @@ export function routeWorkItem(
   });
 
   return updated;
+}
+
+// Verifies: FR-WFD-004 — Evaluate workflow routing rules against a work item
+function evaluateCondition(item: WorkItem, condition: { field: string; operator: RuleOperator; value: string | string[] }): boolean {
+  const itemValue = (item as unknown as Record<string, unknown>)[condition.field] as string | undefined;
+  if (itemValue === undefined) return false;
+
+  switch (condition.operator) {
+    case RuleOperator.Equals:
+      return itemValue === condition.value;
+    case RuleOperator.NotEquals:
+      return itemValue !== condition.value;
+    case RuleOperator.In:
+      return Array.isArray(condition.value) && condition.value.includes(itemValue);
+    case RuleOperator.NotIn:
+      return Array.isArray(condition.value) && !condition.value.includes(itemValue);
+    default:
+      return false;
+  }
+}
+
+// Verifies: FR-WFD-004 — Route using workflow-defined rules instead of hardcoded logic
+export function routeWithWorkflow(item: WorkItem, workflow: Workflow, overrideRoute?: WorkItemRoute): RouteResult {
+  if (overrideRoute) {
+    return {
+      route: overrideRoute,
+      targetStatus: overrideRoute === WorkItemRoute.FastTrack ? WorkItemStatus.Approved : WorkItemStatus.Proposed,
+    };
+  }
+
+  // Sort rules by priority (lower = first)
+  const sortedRules = [...workflow.routingRules].sort((a, b) => a.priority - b.priority);
+
+  for (const rule of sortedRules) {
+    // All conditions must match (AND logic)
+    const allMatch = rule.conditions.every((cond) => evaluateCondition(item, cond));
+    if (allMatch) {
+      return {
+        route: rule.path,
+        targetStatus: rule.path === WorkItemRoute.FastTrack ? WorkItemStatus.Approved : WorkItemStatus.Proposed,
+      };
+    }
+  }
+
+  // Default: full-review if no rule matches
+  return {
+    route: WorkItemRoute.FullReview,
+    targetStatus: WorkItemStatus.Proposed,
+  };
 }
 
 // Verifies: FR-WF-004 — Team assignment rules

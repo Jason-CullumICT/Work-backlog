@@ -54,6 +54,128 @@ export enum AssessmentVerdict {
   NeedsClarification = 'needs-clarification',
 }
 
+// --- Workflow Enums --- // Verifies: FR-WFD-001
+
+export enum StageType {
+  Intake = 'intake',
+  Queue = 'queue',
+  Router = 'router',
+  Assessment = 'assessment',
+  Worklist = 'worklist',
+  Dispatch = 'dispatch',
+}
+
+export enum RuleOperator {
+  Equals = 'equals',
+  In = 'in',
+  NotEquals = 'not-equals',
+  NotIn = 'not-in',
+}
+
+export enum ConsensusRule {
+  AllApprove = 'all-approve',
+  MajorityApprove = 'majority-approve',
+  LeadDecides = 'lead-decides',
+}
+
+// --- Workflow Entities --- // Verifies: FR-WFD-001
+
+export interface WorkflowStage {
+  id: string;
+  name: string;
+  type: StageType;
+  order: number;
+  description: string;
+  statusMapping: WorkItemStatus;
+}
+
+export interface RuleCondition {
+  field: string;
+  operator: RuleOperator;
+  value: string | string[];
+}
+
+export interface RoutingRule {
+  id: string;
+  name: string;
+  path: WorkItemRoute;
+  conditions: RuleCondition[];
+  priority: number;
+}
+
+export interface AssessmentRole {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface AssessmentConfig {
+  roles: AssessmentRole[];
+  consensusRule: ConsensusRule;
+}
+
+export interface Workflow {
+  id: string;
+  name: string;
+  description: string;
+  stages: WorkflowStage[];
+  routingRules: RoutingRule[];
+  assessmentConfig: AssessmentConfig;
+  teamTargets: string[];
+  isDefault: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deleted?: boolean;
+}
+
+// --- Workflow API Request Types --- // Verifies: FR-WFD-001
+
+export interface CreateWorkflowRequest {
+  name: string;
+  description: string;
+  stages: Omit<WorkflowStage, 'id'>[];
+  routingRules: Omit<RoutingRule, 'id'>[];
+  assessmentConfig: AssessmentConfig;
+  teamTargets: string[];
+}
+
+export interface UpdateWorkflowRequest {
+  name?: string;
+  description?: string;
+  stages?: Omit<WorkflowStage, 'id'>[];
+  routingRules?: Omit<RoutingRule, 'id'>[];
+  assessmentConfig?: AssessmentConfig;
+  teamTargets?: string[];
+  isActive?: boolean;
+}
+
+// --- Workflow Flow Graph Types --- // Verifies: FR-WFD-003
+
+export interface FlowNode {
+  id: string;
+  type: 'input' | 'queue' | 'router' | 'assessment-pod' | 'assessment-role' | 'worklist' | 'dispatch' | 'team';
+  label: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  metadata?: Record<string, unknown>;
+}
+
+export interface FlowEdge {
+  id: string;
+  source: string;
+  target: string;
+  label?: string;
+  style?: 'solid' | 'dashed';
+}
+
+export interface WorkflowFlowResponse {
+  nodes: FlowNode[];
+  edges: FlowEdge[];
+}
+
 // --- Entities ---
 
 export interface ChangeHistoryEntry {
@@ -85,6 +207,7 @@ export interface WorkItem {
   complexity?: WorkItemComplexity;
   route?: WorkItemRoute;
   assignedTeam?: string;
+  workflowId?: string; // Verifies: FR-WFD-006 — Optional workflow association
   changeHistory: ChangeHistoryEntry[];
   assessments: AssessmentRecord[];
   createdAt: string;
@@ -102,6 +225,7 @@ export interface CreateWorkItemRequest {
   source: WorkItemSource;
   complexity?: WorkItemComplexity;
   fastTrack?: boolean;
+  workflowId?: string; // Verifies: FR-WFD-006 — Optional workflow association
 }
 
 export interface UpdateWorkItemRequest {

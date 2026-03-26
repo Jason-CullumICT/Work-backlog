@@ -3,10 +3,12 @@
 import React from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 
+// Verifies: FR-WFD-010 — Navigation includes Workflows link
 const NAV_ITEMS = [
   { path: '/', label: 'Dashboard' },
   { path: '/work-items', label: 'Work Items' },
   { path: '/work-items/new', label: 'Create Item' },
+  { path: '/workflows', label: 'Workflows' },
 ];
 
 export const Layout: React.FC = () => {

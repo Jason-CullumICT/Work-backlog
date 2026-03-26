@@ -5,6 +5,8 @@ import {
   WorkItemStatus,
   AssessmentRecord,
   AssessmentVerdict,
+  Workflow,
+  ConsensusRule,
 } from '../../../Shared/types/workflow';
 import * as store from '../store/workItemStore';
 import { buildChangeEntry } from '../models/WorkItem';
@@ -169,6 +171,84 @@ export function runAssessmentPod(item: WorkItem): AssessmentResult {
   return {
     verdict: podLeadAssessment.verdict,
     assessments: allAssessments,
+    targetStatus,
+  };
+}
+
+// Verifies: FR-WFD-005 — Run assessment using workflow-defined pod config and consensus rule
+export function assessWithWorkflow(item: WorkItem, workflow: Workflow): AssessmentResult {
+  // Use the standard role assessment functions for known roles
+  const memberAssessments: AssessmentRecord[] = [];
+
+  for (const role of workflow.assessmentConfig.roles) {
+    // Map known role IDs to their assessment functions
+    switch (role.id) {
+      case 'role-req-reviewer':
+        memberAssessments.push(assessAsRequirementsReviewer(item));
+        break;
+      case 'role-domain-expert':
+        memberAssessments.push(assessAsDomainExpert(item));
+        break;
+      case 'role-work-definer':
+        memberAssessments.push(assessAsWorkDefiner(item));
+        break;
+      case 'role-pod-lead':
+        // Pod lead aggregates at the end
+        break;
+      default:
+        // Unknown roles get a generic approval
+        memberAssessments.push({
+          role: role.id,
+          verdict: AssessmentVerdict.Approve,
+          notes: `${role.name} assessment passed`,
+          suggestedChanges: [],
+          timestamp: new Date().toISOString(),
+        });
+        break;
+    }
+  }
+
+  // Apply consensus rule
+  let verdict: AssessmentVerdict;
+  let targetStatus: WorkItemStatus;
+
+  const approvals = memberAssessments.filter((a) => a.verdict === AssessmentVerdict.Approve);
+  const rejections = memberAssessments.filter((a) => a.verdict === AssessmentVerdict.Reject);
+
+  switch (workflow.assessmentConfig.consensusRule) {
+    case ConsensusRule.AllApprove:
+      verdict = rejections.length > 0 ? AssessmentVerdict.Reject : AssessmentVerdict.Approve;
+      break;
+    case ConsensusRule.MajorityApprove:
+      verdict = approvals.length > memberAssessments.length / 2
+        ? AssessmentVerdict.Approve
+        : AssessmentVerdict.Reject;
+      break;
+    case ConsensusRule.LeadDecides: {
+      const podLeadResult = assessAsPodLead(item, memberAssessments);
+      memberAssessments.push(podLeadResult);
+      verdict = podLeadResult.verdict;
+      break;
+    }
+    default:
+      verdict = rejections.length > 0 ? AssessmentVerdict.Reject : AssessmentVerdict.Approve;
+  }
+
+  // Add pod-lead summary if not already added by LeadDecides
+  if (workflow.assessmentConfig.consensusRule !== ConsensusRule.LeadDecides) {
+    const podLeadResult = assessAsPodLead(item, memberAssessments);
+    memberAssessments.push(podLeadResult);
+  }
+
+  if (verdict === AssessmentVerdict.Approve) {
+    targetStatus = WorkItemStatus.Approved;
+  } else {
+    targetStatus = WorkItemStatus.Rejected;
+  }
+
+  return {
+    verdict,
+    assessments: memberAssessments,
     targetStatus,
   };
 }

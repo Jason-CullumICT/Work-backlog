@@ -1,11 +1,13 @@
-// Verifies: FR-WF-002, FR-WF-006, FR-WF-007, FR-WF-008, FR-WF-013 — Express app setup
+// Verifies: FR-WF-002, FR-WF-006, FR-WF-007, FR-WF-008, FR-WF-013, FR-WFD-002 — Express app setup
 import express from 'express';
 import workItemsRouter from './routes/workItems';
 import workflowRouter from './routes/workflow';
+import workflowDefinitionsRouter from './routes/workflows';
 import dashboardRouter from './routes/dashboard';
 import intakeRouter from './routes/intake';
 import { errorHandler } from './middleware/errorHandler';
 import { registry } from './metrics';
+import { seedDefaultWorkflow } from './services/workflowService';
 import logger from './logger';
 
 const app = express();
@@ -30,6 +32,9 @@ app.use('/api/dashboard', dashboardRouter);
 // Verifies: FR-WF-008 — Intake webhook routes
 app.use('/api/intake', intakeRouter);
 
+// Verifies: FR-WFD-002 — Workflow definition CRUD routes
+app.use('/api/workflows', workflowDefinitionsRouter);
+
 // Verifies: FR-WF-013 — Prometheus metrics endpoint
 app.get('/metrics', async (_req, res) => {
   res.set('Content-Type', registry.contentType);
@@ -42,6 +47,9 @@ app.get('/health', (_req, res) => {
 });
 
 app.use(errorHandler);
+
+// Verifies: FR-WFD-001 — Seed default workflow on startup
+seedDefaultWorkflow();
 
 const PORT = process.env.PORT || 3001;
 

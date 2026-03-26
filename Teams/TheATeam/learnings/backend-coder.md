@@ -100,6 +100,42 @@
 - Error handler middleware logs unhandled errors with stack traces
 - Request logging middleware at DEBUG level to avoid noise
 
+## FR-WFD-001: Workflow Data Model and Store
+
+### Architecture Decisions
+- Workflow uses same in-memory Map + shallow-copy pattern as workItemStore
+- `buildDefaultWorkflow()` uses hardcoded stage IDs (e.g., `stage-intake`) for the seed workflow — makes them deterministic for tests and references
+- Store `softDelete` returns `{ success, error? }` object to distinguish between "not found" and "cannot delete default" cases
+- Model validation split into 3 functions: `validateStages`, `validateRoutingRules`, `validateAssessmentConfig` — each returns string[] errors
+
+### Key Implementation Notes
+- Shared types extended with: `StageType`, `RuleOperator`, `ConsensusRule` enums; `Workflow`, `WorkflowStage`, `RoutingRule`, `RuleCondition`, `AssessmentConfig`, `AssessmentRole` interfaces; `FlowNode`, `FlowEdge`, `WorkflowFlowResponse` for flow graph; `CreateWorkflowRequest`, `UpdateWorkflowRequest` request types
+- `workflowId` added as optional field to both `WorkItem` and `CreateWorkItemRequest` (FR-WFD-006)
+- Store `updateWorkflow` uses inline `require('../utils/id')` for stages/rules update to generate new IDs when those arrays are replaced
+- Default workflow has 4 routing rules: 2 fast-track (bug+trivial/small, improvement+trivial/small), 2 full-review (feature, issue)
+- 46 tests across 2 suites: model (24 tests covering builders + validators), store (22 tests covering CRUD + seed + delete protection)
+
+## FR-WFD-002/003/004/005/011: Workflow Definition API, Flow Graph, Service Integration
+
+### Architecture Decisions
+- WorkflowService acts as the orchestration layer between routes and store — validates inputs, delegates to store, manages metrics
+- Flow graph generation (`generateFlowGraph`) converts workflow stages into positioned `FlowNode[]` and `FlowEdge[]` for frontend SVG rendering
+- Columns layout: inputs(x=0) → queue(x=1) → router(x=2) → assessment(x=3) → worklist(x=4) → dispatch(x=5) → teams(x=6)
+- Fast-track edge uses `style: 'dashed'`, full-review uses `style: 'solid'` — matches spec
+- `routeWithWorkflow` evaluates workflow's `routingRules` with AND logic on conditions, sorted by priority
+- `assessWithWorkflow` maps known role IDs to existing assessment functions, applies workflow's `consensusRule`
+- Route file named `workflows.ts` (plural) to avoid conflict with existing `workflow.ts` (work item workflow actions)
+
+### Key Implementation Notes
+- Import logger as `import logger from '../logger'` (default export compat wrapper) — matches existing route pattern
+- Import shared types via relative path `../../../Shared/types/workflow` in route files (same as workItems.ts)
+- Import shared types via `@shared/types/workflow` in service/test files (jest moduleNameMapper)
+- Metrics: added Counter `workflow_definitions_created_total` and Gauge `workflow_definitions_active` with `Gauge` import from prom-client
+- `seedDefaultWorkflow()` called at module level in app.ts, after `errorHandler` registration
+- Route registered as `app.use('/api/workflows', workflowDefinitionsRouter)` — import alias avoids naming conflict with existing `workflowRouter`
+- 40 new tests across 2 suites: service (21 tests), routes (19 tests)
+- `evaluateCondition` uses double-cast `(item as unknown as Record<string, unknown>)` for dynamic field access (same pattern as elsewhere)
+
 ## E2E Testing Infrastructure
 
 ### Key Discovery
