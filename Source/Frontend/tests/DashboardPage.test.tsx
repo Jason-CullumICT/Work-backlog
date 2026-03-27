@@ -13,11 +13,15 @@ vi.mock('../src/api/client', () => ({
     summary: vi.fn(),
     activity: vi.fn(),
     queue: vi.fn(),
+    activeCycles: vi.fn(),
   },
   workItemsApi: {
     list: vi.fn(),
     create: vi.fn(),
   },
+  featuresApi: { list: vi.fn() },
+  learningsApi: { list: vi.fn() },
+  cyclesApi: { list: vi.fn(), getById: vi.fn() },
 }));
 
 import { dashboardApi } from '../src/api/client';
@@ -63,6 +67,7 @@ describe('DashboardPage', () => {
     (dashboardApi.summary as ReturnType<typeof vi.fn>).mockResolvedValue(mockSummary);
     (dashboardApi.activity as ReturnType<typeof vi.fn>).mockResolvedValue(mockActivity);
     (dashboardApi.queue as ReturnType<typeof vi.fn>).mockResolvedValue(mockQueue);
+    (dashboardApi.activeCycles as ReturnType<typeof vi.fn>).mockResolvedValue({ data: [] });
   });
 
   // Verifies: FR-WF-009 — Loading state

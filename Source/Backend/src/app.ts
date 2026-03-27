@@ -4,6 +4,9 @@ import workItemsRouter from './routes/workItems';
 import workflowRouter from './routes/workflow';
 import dashboardRouter from './routes/dashboard';
 import intakeRouter from './routes/intake';
+import cyclesRouter from './routes/cycles';
+import featuresRouter from './routes/features';
+import learningsRouter from './routes/learnings';
 import { errorHandler } from './middleware/errorHandler';
 import { registry } from './metrics';
 import logger from './logger';
@@ -29,6 +32,15 @@ app.use('/api/dashboard', dashboardRouter);
 
 // Verifies: FR-WF-008 — Intake webhook routes
 app.use('/api/intake', intakeRouter);
+
+// Verifies: FR-CB-001, FR-CB-002, FR-CB-003, FR-CB-004 — Cycles routes
+app.use('/api/cycles', cyclesRouter);
+
+// Verifies: FR-CB-005, FR-CB-006, FR-CB-007 — Features routes
+app.use('/api/features', featuresRouter);
+
+// Verifies: FR-CB-008, FR-CB-009, FR-CB-010 — Learnings routes
+app.use('/api/learnings', learningsRouter);
 
 // Verifies: FR-WF-013 — Prometheus metrics endpoint
 app.get('/metrics', async (_req, res) => {

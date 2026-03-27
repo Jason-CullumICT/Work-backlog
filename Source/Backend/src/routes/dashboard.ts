@@ -1,6 +1,7 @@
-// Verifies: FR-WF-007 — Dashboard API endpoints
+// Verifies: FR-WF-007, FR-CB-011 — Dashboard API endpoints
 import { Router, Request, Response } from 'express';
 import * as dashboardService from '../services/dashboard';
+import * as cycleService from '../services/cycle';
 import logger from '../logger';
 
 const router = Router();
@@ -27,6 +28,13 @@ router.get('/queue', (_req: Request, res: Response) => {
   const queue = dashboardService.getQueue();
   logger.debug({ msg: 'Dashboard queue requested' });
   res.json(queue);
+});
+
+// Verifies: FR-CB-011 — GET /api/dashboard/active-cycles
+router.get('/active-cycles', (_req: Request, res: Response) => {
+  const cycles = cycleService.getActiveCycles();
+  logger.debug({ msg: 'Dashboard active cycles requested', count: cycles.length });
+  res.json({ data: cycles });
 });
 
 export default router;

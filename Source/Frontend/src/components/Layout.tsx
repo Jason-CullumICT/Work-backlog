@@ -3,10 +3,13 @@
 import React from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 
+// Verifies: FR-CB-012, FR-CB-013 — Navigation includes Features and Learnings
 const NAV_ITEMS = [
   { path: '/', label: 'Dashboard' },
   { path: '/work-items', label: 'Work Items' },
   { path: '/work-items/new', label: 'Create Item' },
+  { path: '/features', label: 'Features' },
+  { path: '/learnings', label: 'Learnings' },
 ];
 
 export const Layout: React.FC = () => {

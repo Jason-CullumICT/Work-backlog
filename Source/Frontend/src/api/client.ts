@@ -8,9 +8,16 @@ import type {
   DashboardSummaryResponse,
   DashboardActivityResponse,
   DashboardQueueResponse,
+  ActiveCyclesResponse,
   CreateWorkItemRequest,
   RejectWorkItemRequest,
   DispatchWorkItemRequest,
+  PaginatedFeaturesResponse,
+  Feature,
+  PaginatedLearningsResponse,
+  LearningFilters,
+  PaginatedCyclesResponse,
+  Cycle,
 } from '../../../Shared/types/workflow';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '/api';
@@ -78,5 +85,54 @@ export const dashboardApi = {
 
   queue(): Promise<DashboardQueueResponse> {
     return request('/dashboard/queue');
+  },
+
+  // Verifies: FR-CB-014 — Fetch active (non-terminal) cycles for dashboard
+  activeCycles(): Promise<ActiveCyclesResponse> {
+    return request('/dashboard/active-cycles');
+  },
+};
+
+// Verifies: FR-CB-012, FR-CB-017 — Features API client
+export const featuresApi = {
+  list(params: PaginationParams = {}): Promise<PaginatedFeaturesResponse> {
+    const qs = new URLSearchParams();
+    for (const [key, value] of Object.entries(params)) {
+      if (value !== undefined) qs.set(key, String(value));
+    }
+    const query = qs.toString();
+    return request(`/features${query ? `?${query}` : ''}`);
+  },
+
+  getById(id: string): Promise<Feature> {
+    return request(`/features/${id}`);
+  },
+};
+
+// Verifies: FR-CB-013, FR-CB-017 — Learnings API client
+export const learningsApi = {
+  list(params: LearningFilters & PaginationParams = {}): Promise<PaginatedLearningsResponse> {
+    const qs = new URLSearchParams();
+    for (const [key, value] of Object.entries(params)) {
+      if (value !== undefined && value !== '') qs.set(key, String(value));
+    }
+    const query = qs.toString();
+    return request(`/learnings${query ? `?${query}` : ''}`);
+  },
+};
+
+// Verifies: FR-CB-003, FR-CB-004 — Cycles API client
+export const cyclesApi = {
+  list(params: PaginationParams = {}): Promise<PaginatedCyclesResponse> {
+    const qs = new URLSearchParams();
+    for (const [key, value] of Object.entries(params)) {
+      if (value !== undefined) qs.set(key, String(value));
+    }
+    const query = qs.toString();
+    return request(`/cycles${query ? `?${query}` : ''}`);
+  },
+
+  getById(id: string): Promise<Cycle> {
+    return request(`/cycles/${id}`);
   },
 };

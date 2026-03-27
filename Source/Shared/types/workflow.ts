@@ -189,3 +189,149 @@ export const VALID_STATUS_TRANSITIONS: Record<WorkItemStatus, WorkItemStatus[]> 
   [WorkItemStatus.Completed]: [],
   [WorkItemStatus.Failed]: [WorkItemStatus.Backlog],
 };
+
+// --- Callback Integration Types (Orchestrator-to-Portal) ---
+
+// Verifies: FR-CB-001 — Cycle status enum
+export enum CycleStatus {
+  Started = 'started',
+  Requirements = 'requirements',
+  ApiContract = 'api-contract',
+  Implementation = 'implementation',
+  Review = 'review',
+  Completed = 'completed',
+  Failed = 'failed',
+}
+
+// Verifies: FR-CB-002 — Cycle result enum
+export enum CycleResult {
+  Passed = 'passed',
+  Failed = 'failed',
+}
+
+// Verifies: FR-CB-001 — CyclePhase interface
+export interface CyclePhase {
+  name: string;
+  startedAt: string;
+  completedAt?: string;
+}
+
+// Verifies: FR-CB-001 — Cycle entity
+export interface Cycle {
+  id: string;
+  workItemId: string;
+  team: string;
+  status: CycleStatus;
+  branch: string;
+  startedAt: string;
+  updatedAt: string;
+  completedAt?: string;
+  phases: CyclePhase[];
+  result?: CycleResult;
+  error?: string;
+}
+
+// Verifies: FR-CB-005 — Feature entity
+export interface Feature {
+  id: string;
+  workItemId: string;
+  cycleId: string;
+  title: string;
+  description: string;
+  branch: string;
+  mergedAt?: string;
+  createdAt: string;
+}
+
+// Verifies: FR-CB-001 — Create Cycle request
+export interface CreateCycleRequest {
+  workItemId: string;
+  team: string;
+  branch: string;
+}
+
+// Verifies: FR-CB-002 — Update Cycle request
+export interface UpdateCycleRequest {
+  status: CycleStatus;
+  error?: string;
+}
+
+// Verifies: FR-CB-005 — Create Feature request
+export interface CreateFeatureRequest {
+  workItemId: string;
+  cycleId: string;
+  title: string;
+  description: string;
+  branch: string;
+  mergedAt?: string;
+}
+
+// Verifies: FR-CB-003 — Cycle filters
+export interface CycleFilters {
+  workItemId?: string;
+  status?: CycleStatus;
+}
+
+// Verifies: FR-CB-003, FR-CB-017 — Paginated Cycles response
+export interface PaginatedCyclesResponse {
+  data: Cycle[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+// Verifies: FR-CB-006, FR-CB-017 — Paginated Features response
+export interface PaginatedFeaturesResponse {
+  data: Feature[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+// Verifies: FR-CB-011, FR-CB-017 — Active Cycles response
+export interface ActiveCyclesResponse {
+  data: Cycle[];
+}
+
+// Verifies: FR-CB-008, FR-CB-009, FR-CB-010 — Learning entity
+export interface Learning {
+  id: string;
+  cycleId: string;
+  team: string;
+  role: string;
+  content: string;
+  category?: string;
+  createdAt: string;
+}
+
+// Verifies: FR-CB-008 — Create Learning request
+export interface CreateLearningRequest {
+  cycleId: string;
+  team: string;
+  role: string;
+  content: string;
+  category?: string;
+}
+
+// Verifies: FR-CB-009 — Batch Create Learnings request
+export interface BatchCreateLearningsRequest {
+  learnings: CreateLearningRequest[];
+}
+
+// Verifies: FR-CB-010 — Learning filters
+export interface LearningFilters {
+  cycleId?: string;
+  team?: string;
+  role?: string;
+}
+
+// Verifies: FR-CB-010 — Paginated Learnings response
+export interface PaginatedLearningsResponse {
+  data: Learning[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}

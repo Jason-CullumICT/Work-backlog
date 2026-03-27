@@ -1,11 +1,73 @@
-// Verifies: FR-WF-009 (Dashboard page with summary, queues, activity feed)
+// Verifies: FR-WF-009, FR-CB-014 (Dashboard page with summary, queues, activity feed, active cycles)
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useDashboard } from '../hooks/useDashboard';
+import { useActiveCycles } from '../hooks/useActiveCycles';
 import { StatusBadge } from '../components/StatusBadge';
 import { PriorityBadge } from '../components/PriorityBadge';
 import { WorkItemStatus, WorkItemPriority } from '../../../Shared/types/workflow';
-import type { ChangeHistoryEntry } from '../../../Shared/types/workflow';
+import type { ChangeHistoryEntry, Cycle } from '../../../Shared/types/workflow';
+
+// Verifies: FR-CB-014 — Compute elapsed time string from startedAt
+function formatElapsed(startedAt: string): string {
+  const ms = Date.now() - new Date(startedAt).getTime();
+  const seconds = Math.floor(ms / 1000);
+  if (seconds < 60) return `${seconds}s`;
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  return `${hours}h ${remainingMinutes}m`;
+}
+
+// Verifies: FR-CB-014 — Active Cycles section showing running pipeline cycles
+const ActiveCycles: React.FC<{ cycles: Cycle[]; loading: boolean; error: string | null }> = ({ cycles, loading, error }) => (
+  <section data-testid="active-cycles">
+    <h2 style={{ fontSize: '16px', marginBottom: '12px' }}>Active Cycles</h2>
+    {loading && <p style={{ color: '#6b7280', fontSize: '14px' }}>Loading cycles...</p>}
+    {error && <p style={{ color: '#ef4444', fontSize: '14px' }}>Failed to load active cycles.</p>}
+    {!loading && !error && cycles.length === 0 && (
+      <p style={{ color: '#9ca3af', fontSize: '14px' }}>No active cycles.</p>
+    )}
+    {!loading && !error && cycles.length > 0 && (
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+        {cycles.map((cycle) => (
+          <Link
+            key={cycle.id}
+            to={`/work-items/${cycle.workItemId}`}
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
+            <div
+              data-testid={`cycle-card-${cycle.id}`}
+              style={{
+                padding: '16px',
+                backgroundColor: '#fff',
+                borderRadius: '8px',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                minWidth: '200px',
+                borderLeft: '4px solid #3b82f6',
+              }}
+            >
+              <div style={{ fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>
+                {cycle.team}
+              </div>
+              <div style={{ fontSize: '12px', color: '#6b7280', marginBottom: '4px' }}>
+                Status: <span style={{ fontWeight: 500, textTransform: 'capitalize' }}>{cycle.status}</span>
+              </div>
+              <div style={{ fontSize: '12px', color: '#6b7280', marginBottom: '4px' }}>
+                Branch: <span style={{ fontWeight: 500 }}>{cycle.branch}</span>
+              </div>
+              <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                Elapsed: <span style={{ fontWeight: 500 }}>{formatElapsed(cycle.startedAt)}</span>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    )}
+  </section>
+);
 
 // Verifies: FR-WF-009 — Summary cards showing status counts
 const SummaryCards: React.FC<{ statusCounts: Record<string, number> }> = ({ statusCounts }) => {
@@ -134,9 +196,11 @@ const ActivityFeed: React.FC<{ entries: (ChangeHistoryEntry & { workItemId?: str
   );
 };
 
-// Verifies: FR-WF-009 — Main Dashboard page component
+// Verifies: FR-WF-009, FR-CB-014 — Main Dashboard page component
 export const DashboardPage: React.FC = () => {
   const { summary, activity, queue, loading, error, refresh } = useDashboard();
+  // Verifies: FR-CB-014 — Fetch active cycles independently from other dashboard data
+  const { cycles: activeCycles, loading: cyclesLoading, error: cyclesError } = useActiveCycles();
 
   if (loading) {
     return <div data-testid="dashboard-loading" style={{ padding: '40px', textAlign: 'center', color: '#6b7280' }}>Loading dashboard...</div>;
@@ -173,6 +237,8 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        {/* Verifies: FR-CB-014 — Active Cycles positioned above Summary */}
+        <ActiveCycles cycles={activeCycles} loading={cyclesLoading} error={cyclesError} />
         {summary && <SummaryCards statusCounts={summary.statusCounts} />}
         {summary && <TeamWorkload teamCounts={summary.teamCounts} />}
         {summary && <PriorityDistribution priorityCounts={summary.priorityCounts} />}

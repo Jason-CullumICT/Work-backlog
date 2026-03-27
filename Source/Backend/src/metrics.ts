@@ -36,3 +36,34 @@ export const itemsDispatchedCounter = new Counter({
   labelNames: ['team'] as const,
   registers: [registry],
 });
+
+// Verifies: FR-CB-015 — portal_cycles_created_total
+export const cyclesCreatedCounter = new Counter({
+  name: 'portal_cycles_created_total',
+  help: 'Total number of cycles created',
+  labelNames: ['team'] as const,
+  registers: [registry],
+});
+
+// Verifies: FR-CB-015 — portal_cycles_completed_total
+export const cyclesCompletedCounter = new Counter({
+  name: 'portal_cycles_completed_total',
+  help: 'Total number of cycles completed',
+  labelNames: ['team', 'result'] as const,
+  registers: [registry],
+});
+
+// Verifies: FR-CB-015 — portal_features_created_total
+export const featuresCreatedCounter = new Counter({
+  name: 'portal_features_created_total',
+  help: 'Total number of features created',
+  registers: [registry],
+});
+
+// Verifies: FR-CB-015 — portal_learnings_created_total
+export const learningsCreatedCounter = new Counter({
+  name: 'portal_learnings_created_total',
+  help: 'Total number of learnings created',
+  labelNames: ['team', 'role'] as const,
+  registers: [registry],
+});
