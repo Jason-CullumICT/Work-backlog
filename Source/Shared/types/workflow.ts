@@ -54,6 +54,42 @@ export enum AssessmentVerdict {
   NeedsClarification = 'needs-clarification',
 }
 
+// Verifies: FR-CR-002 — Phase execution status
+export enum PhaseStatus {
+  Pending = 'pending',
+  Skipped = 'skipped',
+  Running = 'running',
+  Completed = 'completed',
+  Failed = 'failed',
+}
+
+// Verifies: FR-CR-002 — Result of a single pipeline phase
+export interface PhaseResult {
+  name: string;
+  status: PhaseStatus;
+  startedAt: string | null;
+  completedAt: string | null;
+  output: unknown | null;
+  skipReason: string | null;
+}
+
+// Verifies: FR-CR-002 — Full pipeline run tracking
+export interface PipelineRun {
+  runId: string;
+  attempt: number;
+  phases: PhaseResult[];
+  resumedFrom: string | null;
+  startedAt: string;
+  completedAt: string | null;
+  progressLog: string[];
+}
+
+// Verifies: FR-CR-001 — Retry request body
+export interface RetryWorkItemRequest {
+  resumeFrom?: string;
+  reason?: string;
+}
+
 // --- Entities ---
 
 export interface ChangeHistoryEntry {
@@ -87,6 +123,7 @@ export interface WorkItem {
   assignedTeam?: string;
   changeHistory: ChangeHistoryEntry[];
   assessments: AssessmentRecord[];
+  pipelineRun?: PipelineRun; // Verifies: FR-CR-002 — Current/latest pipeline execution state
   createdAt: string;
   updatedAt: string;
   deleted?: boolean;
@@ -187,5 +224,5 @@ export const VALID_STATUS_TRANSITIONS: Record<WorkItemStatus, WorkItemStatus[]> 
   [WorkItemStatus.Rejected]: [WorkItemStatus.Backlog],
   [WorkItemStatus.InProgress]: [WorkItemStatus.Completed, WorkItemStatus.Failed],
   [WorkItemStatus.Completed]: [],
-  [WorkItemStatus.Failed]: [WorkItemStatus.Backlog],
+  [WorkItemStatus.Failed]: [WorkItemStatus.Backlog, WorkItemStatus.InProgress], // Verifies: FR-CR-007 — failed → in-progress for retry
 };

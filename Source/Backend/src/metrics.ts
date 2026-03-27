@@ -36,3 +36,19 @@ export const itemsDispatchedCounter = new Counter({
   labelNames: ['team'] as const,
   registers: [registry],
 });
+
+// Verifies: FR-CR-006 — workflow_items_retried_total
+export const itemsRetriedCounter = new Counter({
+  name: 'workflow_items_retried_total',
+  help: 'Total number of work items retried',
+  labelNames: ['resumed'] as const,
+  registers: [registry],
+});
+
+// Verifies: FR-CR-006 — workflow_phases_skipped_total
+export const phasesSkippedCounter = new Counter({
+  name: 'workflow_phases_skipped_total',
+  help: 'Total number of pipeline phases skipped during retry',
+  labelNames: ['phase'] as const,
+  registers: [registry],
+});
