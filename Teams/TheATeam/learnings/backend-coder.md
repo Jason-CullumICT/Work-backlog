@@ -136,6 +136,45 @@
 - 40 new tests across 2 suites: service (21 tests), routes (19 tests)
 - `evaluateCondition` uses double-cast `(item as unknown as Record<string, unknown>)` for dynamic field access (same pattern as elsewhere)
 
+## FR-CB-008/009/010: Learnings CRUD (backend-coder-2)
+
+### Architecture Decisions
+- Store follows the same in-memory Map + UUID pattern as workItemStore
+- Service layer wraps store operations and increments Prometheus counter `portal_learnings_created_total{team,role}`
+- Batch endpoint validates each item individually, returning the specific index on failure
+- Route exports default Router for mounting by app.ts
+
+### Key Implementation Notes
+- Import logger as `import logger from '../logger'` (default export compat wrapper) — same pattern as other routes
+- Import shared types via relative `../../../Shared/types/workflow` in route files
+- Batch endpoint returns `{ data: Learning[] }` wrapper per API response patterns
+- Single create returns bare `Learning` object (single item pattern)
+- `resetStore()` exported for test isolation (same as workItemStore)
+- 18 tests covering: create (with/without category), validation (4 required fields), batch create (success, validation, edge cases), list with pagination, filters (team, role, cycleId, combined), empty results
+
+### Coordination
+- backend-coder-1 handles app.ts mounting and metrics.ts counter definitions
+- When working concurrently, both agents may edit the same files — the system merges changes correctly
+
+## FR-CB-001 to FR-CB-011: Orchestrator-to-Portal Callbacks (backend-coder-3)
+
+### Architecture Decisions
+- Three new entity stores (cycleStore, featureStore, learningStore) all follow the same Map-based pattern as workItemStore
+- Three new service layers handle business logic: cycle creates + WorkItem status transitions, feature creates + WorkItem completion, learning stores agent discoveries
+- CycleService.createCycle() transitions WorkItem from `approved` to `in-progress`; FeatureService.createFeature() transitions from `in-progress` to `completed`
+- Active cycles endpoint added to existing dashboard router rather than creating a new route file
+- 4 new Prometheus counters: `portal_cycles_created_total{team}`, `portal_cycles_completed_total{team,result}`, `portal_features_created_total`, `portal_learnings_created_total{team,role}`
+
+### Key Implementation Notes
+- CycleFilters interface was missing from shared types (added by backend-coder-3 while others added the rest)
+- Cycle phases array is maintained immutably in store — each update closes current phase's `completedAt` and appends new one
+- Terminal cycle statuses (completed/failed) set `completedAt`, `result`, and optionally `error`
+- Feature store has no filters (spec only requires pagination for list endpoint)
+- When multiple agents edit the same files concurrently, file re-reads are essential before edits
+- Features test suite added with 13 tests covering CRUD, WorkItem status transitions, and validation
+- Dashboard test extended with 3 active-cycles tests (FR-CB-011)
+- Full suite: 148 tests across 13 suites, all passing with zero regressions
+
 ## E2E Testing Infrastructure
 
 ### Key Discovery
@@ -143,3 +182,12 @@
 - Missing `playwright.config.ts` causes all E2E tests to fail with `net::ERR_CONNECTION_REFUSED`
 - Created `Source/E2E/playwright.config.ts` with `webServer` config to auto-start both services
 - Use `reuseExistingServer: true` so config works whether services are pre-started or not
+
+## QA Review: Orchestrator-to-Portal Callbacks
+
+### Findings
+- Duplicate `CycleFilters` interface in `Source/Shared/types/workflow.ts` (lines 270 and 299) — removed the second duplicate
+- E2E test failures (`net::ERR_CONNECTION_REFUSED` at localhost:5173) are infrastructure-only — frontend server not running during E2E, not a backend code bug
+- `playwright.pipeline.config.ts` uses `baseURL: http://localhost:5101` but tests hardcode `http://localhost:5173` — E2E tests bypass baseURL config
+- All 148 backend tests pass with zero regressions after shared types cleanup
+- Full FR-CB traceability coverage: FR-CB-001 through FR-CB-011, FR-CB-015 through FR-CB-019 all have `// Verifies` comments

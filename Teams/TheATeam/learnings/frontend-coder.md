@@ -1,5 +1,14 @@
 # Frontend Coder Learnings
 
+## 2026-03-27: Orchestrator-to-Portal Callback Integration (frontend-coder-1)
+
+- When other agents (api-contract, backend-coder) add types to shared workflow.ts concurrently, always re-read the file before editing — it may already contain some of the types you need
+- `dashboardApi.activeCycles()` was already added by another agent — check client.ts before duplicating
+- Test fixtures must use `undefined` not `null` for optional fields (TypeScript `string | undefined` rejects `null`)
+- Team/role names appear in both filter `<option>` elements and badge content on LearningsPage — use `getAllByText` instead of `getByText` in tests
+- Test files go in `Source/Frontend/tests/` not `Source/Frontend/src/__tests__/` (both patterns exist but `tests/` is the primary location)
+- All 10 test files / 114 tests passing after this feature
+
 ## 2026-03-26: Self-Judging Workflow Engine
 
 - Shared types at `Source/Shared/types/workflow.ts` were created by api-contract agent — use relative imports `../../../Shared/types/workflow`
@@ -42,3 +51,11 @@
 - `tsconfig.noUnusedLocals` — be careful with `waitFor` import in test files that don't use async assertions
 - App.tsx was missing `/workflows` and `/workflows/new` routes — frontend-coder-1 only added `/workflows/:id`. Always check wiring audit for all route registrations
 - Route order matters: `/workflows/new` must come before `/workflows/:id` so "new" isn't matched as a param
+
+## 2026-03-27: Orchestrator-Portal Callbacks (frontend-coder-2)
+
+- When adding new hooks that call new API methods, existing test mocks for `client.ts` must be updated to include the new methods — otherwise `TypeError: X is not a function` breaks all existing dashboard tests
+- Use `within()` to scope `getByText` queries in tests when dashboard sections display the same text (e.g., team names appear in both ActiveCycles cards and TeamWorkload summary)
+- The `useActiveCycles` hook fetches independently from `useDashboard` — this means the ActiveCycles section can render even if the main dashboard API fails, providing graceful degradation
+- Shared types for Cycle/Feature/Learning entities were added by api-contract agent to `Source/Shared/types/workflow.ts` — includes `CycleStatus`, `CycleResult`, `CyclePhase`, `Cycle`, `Feature`, `Learning`, `ActiveCyclesResponse`
+- frontend-coder-1 concurrently modified `client.ts` to add `featuresApi`, `learningsApi`, `cyclesApi` — coordination notes in dispatch plan are critical for avoiding merge conflicts
