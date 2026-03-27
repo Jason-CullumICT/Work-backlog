@@ -139,4 +139,25 @@ describe('DashboardPage', () => {
     });
     expect(screen.getByText(/Network error/)).toBeInTheDocument();
   });
+
+  // Verifies: FR-WF-009 — Auto-refresh triggers periodic data fetch
+  it('auto-refreshes dashboard data on interval', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    renderDashboard();
+
+    // Wait for initial load
+    await vi.waitFor(() => {
+      expect(screen.getByTestId('summary-cards')).toBeInTheDocument();
+    });
+    expect(dashboardApi.summary).toHaveBeenCalledTimes(1);
+
+    // Advance past the 30-second auto-refresh interval
+    await vi.advanceTimersByTimeAsync(30_000);
+
+    await vi.waitFor(() => {
+      expect(dashboardApi.summary).toHaveBeenCalledTimes(2);
+    });
+
+    vi.useRealTimers();
+  });
 });

@@ -1,0 +1,32 @@
+{
+  "audit_date": "2026-03-27",
+  "branch": "cycle/run-1774572910837-a438fded",
+  "grade": "D",
+  "totals": { "p1": 7, "p2": 16, "p3": 20, "p4": 10, "total": 53 },
+  "spec_coverage_pct": 100,
+  "findings": [
+    { "id": "RED-001", "severity": "P1", "specialist": "red-teamer", "category": "A01: Broken Access Control", "title": "All API endpoints have zero authentication", "file": "Source/Backend/src/app.ts", "status": "NEW" },
+    { "id": "RED-002", "severity": "P1", "specialist": "red-teamer", "category": "A01: Broken Access Control", "title": "Intake webhooks have no origin verification", "file": "Source/Backend/src/routes/intake.ts:26-89", "status": "NEW" },
+    { "id": "RED-003", "severity": "P1", "specialist": "red-teamer", "category": "A01: Broken Access Control", "title": "Prometheus /metrics publicly accessible", "file": "Source/Backend/src/app.ts:44-47", "status": "NEW" },
+    { "id": "PERF-001", "severity": "P1", "specialist": "performance-profiler", "category": "Performance", "title": "High-cardinality route label in HTTP histogram", "file": "Source/Backend/src/app.ts:22-29", "status": "NEW" },
+    { "id": "PERF-003", "severity": "P1", "specialist": "performance-profiler", "category": "Performance", "title": "Synchronous file I/O on every write operation", "file": "Source/Backend/src/store/workItemStore.ts:20-34", "status": "NEW" },
+    { "id": "CHAOS-001", "severity": "P1", "specialist": "chaos-monkey", "category": "Resilience", "title": "Intake routes have no try/catch", "file": "Source/Backend/src/routes/intake.ts:44,77", "status": "NEW" },
+    { "id": "CHAOS-002", "severity": "P1", "specialist": "chaos-monkey", "category": "Resilience", "title": "loadFromFile never called — store starts empty on restart", "file": "Source/Backend/src/app.ts", "status": "NEW" },
+    { "id": "RED-004", "severity": "P2", "specialist": "red-teamer", "category": "A01: Broken Access Control", "title": "Unguarded approve/dispatch workflow actions", "file": "Source/Backend/src/routes/workflow.ts:85-259", "status": "NEW" },
+    { "id": "RED-005", "severity": "P2", "specialist": "red-teamer", "category": "A03: Injection", "title": "No input length limits on free-text fields", "file": "Source/Backend/src/routes/intake.ts", "status": "NEW" },
+    { "id": "RED-006", "severity": "P2", "specialist": "red-teamer", "category": "A03: Injection", "title": "Unsanitized route param in error response", "file": "Source/Backend/src/routes/workflow.ts", "status": "NEW" },
+    { "id": "RED-007", "severity": "P2", "specialist": "red-teamer", "category": "A03: Injection", "title": "overrideRoute bypasses assessment pipeline", "file": "Source/Backend/src/routes/workflow.ts:48, services/router.ts:45-54", "status": "NEW" },
+    { "id": "RED-008", "severity": "P2", "specialist": "red-teamer", "category": "A03: Injection", "title": "Unbounded pagination parameters", "file": "Source/Backend/src/routes/workItems.ts:68-69", "status": "NEW" },
+    { "id": "PERF-004", "severity": "P2", "specialist": "performance-profiler", "category": "Performance", "title": "getActivity full scan before pagination", "file": "Source/Backend/src/services/dashboard.ts:32-56", "status": "NEW" },
+    { "id": "PERF-005", "severity": "P2", "specialist": "performance-profiler", "category": "Performance", "title": "getQueue returns full item objects with no limit", "file": "Source/Backend/src/services/dashboard.ts:59-78", "status": "NEW" },
+    { "id": "PERF-006", "severity": "P2", "specialist": "performance-profiler", "category": "Performance", "title": "findAll full table scan with Date parsing sort", "file": "Source/Backend/src/store/workItemStore.ts:75-109", "status": "NEW" },
+    { "id": "PERF-007", "severity": "P2", "specialist": "performance-profiler", "category": "Performance", "title": "persistToFile JSON grows unboundedly", "file": "Source/Backend/src/store/workItemStore.ts:26-33", "status": "NEW" },
+    { "id": "CHAOS-003", "severity": "P2", "specialist": "chaos-monkey", "category": "Resilience", "title": "persistToFile silently swallows disk errors", "file": "Source/Backend/src/store/workItemStore.ts:20-34", "status": "NEW" },
+    { "id": "CHAOS-004", "severity": "P2", "specialist": "chaos-monkey", "category": "Resilience", "title": "loadFromFile loads unvalidated JSON", "file": "Source/Backend/src/store/workItemStore.ts:40-43", "status": "NEW" },
+    { "id": "CHAOS-006", "severity": "P2", "specialist": "chaos-monkey", "category": "Resilience", "title": "Frontend fetch has no timeout — AbortController signal not threaded", "file": "Source/Frontend/src/api/client.ts:20-32", "status": "NEW" },
+    { "id": "CHAOS-009", "severity": "P2", "specialist": "chaos-monkey", "category": "Resilience", "title": "CRUD routes have no try/catch", "file": "Source/Backend/src/routes/workItems.ts:20-137", "status": "NEW" },
+    { "id": "CHAOS-011", "severity": "P2", "specialist": "chaos-monkey", "category": "Resilience", "title": "Dashboard service unguarded sort on null timestamps", "file": "Source/Backend/src/services/dashboard.ts", "status": "NEW" },
+    { "id": "DEP-001", "severity": "P2", "specialist": "dependency-auditor", "category": "Dependency", "title": "esbuild CORS bypass in dev server (vite transitive)", "file": "Source/Frontend/package.json", "status": "NEW" },
+    { "id": "DEP-005", "severity": "P2", "specialist": "dependency-auditor", "category": "Dependency", "title": "path-to-regexp 0.x unmaintained (Express transitive)", "file": "Source/Backend/package.json", "status": "NEW" }
+  ]
+}

@@ -4,8 +4,8 @@ import React from 'react';
 import { useDashboard } from '../hooks/useDashboard';
 import { StatusBadge } from '../components/StatusBadge';
 import { PriorityBadge } from '../components/PriorityBadge';
-import { WorkItemStatus, WorkItemPriority } from '../../../Shared/types/workflow';
-import type { ChangeHistoryEntry } from '../../../Shared/types/workflow';
+import { WorkItemStatus, WorkItemPriority } from '@shared/types/workflow';
+import type { ChangeHistoryEntry } from '@shared/types/workflow';
 
 // Verifies: FR-WF-009 — Summary cards showing status counts
 const SummaryCards: React.FC<{ statusCounts: Record<string, number> }> = ({ statusCounts }) => {

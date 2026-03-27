@@ -15,7 +15,7 @@ import { routeWorkItem } from '../services/router';
 import { assessWorkItem } from '../services/assessment';
 import { assignTeam } from '../services/router';
 import { buildChangeEntry } from '../models/WorkItem';
-import { itemsDispatchedCounter } from '../metrics';
+import { itemsDispatchedCounter, itemsCompletedCounter, itemsFailedCounter, itemsRequeuedCounter } from '../metrics';
 import logger from '../logger';
 
 const router = Router();
@@ -254,6 +254,167 @@ router.post('/:id/dispatch', (req: Request, res: Response) => {
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Internal server error';
     logger.error({ msg: 'Dispatch action failed', error: message, workItemId: req.params.id });
+    res.status(500).json({ error: message });
+  }
+});
+
+// Verifies: FR-WF-006 — POST /api/work-items/:id/complete (in-progress → completed)
+router.post('/:id/complete', (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const item = store.findById(id);
+    if (!item) {
+      res.status(404).json({ error: `Work item ${id} not found` });
+      return;
+    }
+
+    if (item.status !== WorkItemStatus.InProgress) {
+      res.status(400).json({
+        error: `Cannot complete work item in status '${item.status}'. Must be in 'in-progress' status.`,
+      });
+      return;
+    }
+
+    const statusEntry = buildChangeEntry(
+      'status', item.status, WorkItemStatus.Completed, 'system',
+      'Work item completed successfully',
+    );
+    item.changeHistory.push(statusEntry);
+
+    const updated = store.updateWorkItem(id, {
+      status: WorkItemStatus.Completed,
+      changeHistory: item.changeHistory,
+    });
+
+    if (!updated) {
+      res.status(500).json({ error: 'Failed to update work item' });
+      return;
+    }
+
+    // Verifies: FR-WF-013 — Prometheus metric
+    itemsCompletedCounter.inc();
+
+    logger.info({
+      msg: 'Work item completed',
+      workItemId: id,
+      docId: updated.docId,
+    });
+
+    res.json(updated);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Internal server error';
+    logger.error({ msg: 'Complete action failed', error: message, workItemId: req.params.id });
+    res.status(500).json({ error: message });
+  }
+});
+
+// Verifies: FR-WF-006 — POST /api/work-items/:id/fail (in-progress → failed)
+router.post('/:id/fail', (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { reason } = req.body as { reason?: string };
+
+    const item = store.findById(id);
+    if (!item) {
+      res.status(404).json({ error: `Work item ${id} not found` });
+      return;
+    }
+
+    if (item.status !== WorkItemStatus.InProgress) {
+      res.status(400).json({
+        error: `Cannot fail work item in status '${item.status}'. Must be in 'in-progress' status.`,
+      });
+      return;
+    }
+
+    const statusEntry = buildChangeEntry(
+      'status', item.status, WorkItemStatus.Failed, 'system',
+      reason || 'Implementation failed',
+    );
+    item.changeHistory.push(statusEntry);
+
+    const updated = store.updateWorkItem(id, {
+      status: WorkItemStatus.Failed,
+      changeHistory: item.changeHistory,
+    });
+
+    if (!updated) {
+      res.status(500).json({ error: 'Failed to update work item' });
+      return;
+    }
+
+    // Verifies: FR-WF-013 — Prometheus metric
+    itemsFailedCounter.inc();
+
+    logger.info({
+      msg: 'Work item failed',
+      workItemId: id,
+      docId: updated.docId,
+      reason,
+    });
+
+    res.json(updated);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Internal server error';
+    logger.error({ msg: 'Fail action failed', error: message, workItemId: req.params.id });
+    res.status(500).json({ error: message });
+  }
+});
+
+// Verifies: FR-WF-006 — POST /api/work-items/:id/requeue (rejected/failed → backlog)
+router.post('/:id/requeue', (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { reason } = req.body as { reason?: string };
+
+    const item = store.findById(id);
+    if (!item) {
+      res.status(404).json({ error: `Work item ${id} not found` });
+      return;
+    }
+
+    // Verifies: FR-WF-006 — Enforce valid status transitions (rejected → backlog, failed → backlog)
+    if (!isValidTransition(item.status, WorkItemStatus.Backlog)) {
+      res.status(400).json({
+        error: `Cannot requeue work item in status '${item.status}'. Must be in 'rejected' or 'failed' status.`,
+      });
+      return;
+    }
+
+    const fromStatus = item.status;
+    const statusEntry = buildChangeEntry(
+      'status', item.status, WorkItemStatus.Backlog, 'system',
+      reason || `Requeued from ${fromStatus}`,
+    );
+    item.changeHistory.push(statusEntry);
+
+    const updated = store.updateWorkItem(id, {
+      status: WorkItemStatus.Backlog,
+      route: undefined,
+      assignedTeam: undefined,
+      changeHistory: item.changeHistory,
+    });
+
+    if (!updated) {
+      res.status(500).json({ error: 'Failed to update work item' });
+      return;
+    }
+
+    // Verifies: FR-WF-013 — Prometheus metric
+    itemsRequeuedCounter.inc({ from_status: fromStatus });
+
+    logger.info({
+      msg: 'Work item requeued',
+      workItemId: id,
+      docId: updated.docId,
+      fromStatus,
+    });
+
+    res.json(updated);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Internal server error';
+    logger.error({ msg: 'Requeue action failed', error: message, workItemId: req.params.id });
     res.status(500).json({ error: message });
   }
 });

@@ -36,27 +36,6 @@ function isFastTrack(item: WorkItem): boolean {
   return false;
 }
 
-// Verifies: FR-WF-004 — Full-review criteria (default path)
-function isFullReview(item: WorkItem): boolean {
-  // All feature type items
-  if (item.type === WorkItemType.Feature) return true;
-
-  // All bug items with medium+ complexity
-  if (
-    item.type === WorkItemType.Bug &&
-    item.complexity &&
-    [WorkItemComplexity.Medium, WorkItemComplexity.Large, WorkItemComplexity.Complex].includes(item.complexity)
-  ) {
-    return true;
-  }
-
-  // All issue type items
-  if (item.type === WorkItemType.Issue) return true;
-
-  // Default: full-review for anything not matching fast-track
-  return true;
-}
-
 export interface RouteResult {
   route: WorkItemRoute;
   targetStatus: WorkItemStatus;

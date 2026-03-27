@@ -1,7 +1,7 @@
 // Verifies: FR-WF-010, FR-WF-011 (status display for work items)
 
 import React from 'react';
-import { WorkItemStatus } from '../../../Shared/types/workflow';
+import { WorkItemStatus } from '@shared/types/workflow';
 
 const STATUS_COLORS: Record<WorkItemStatus, string> = {
   [WorkItemStatus.Backlog]: '#6b7280',

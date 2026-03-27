@@ -5,8 +5,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
   WorkItemStatus,
   AssessmentVerdict,
-} from '../../../Shared/types/workflow';
-import type { WorkItem, ChangeHistoryEntry, AssessmentRecord } from '../../../Shared/types/workflow';
+} from '@shared/types/workflow';
+import type { WorkItem, ChangeHistoryEntry, AssessmentRecord } from '@shared/types/workflow';
 import { useWorkItem } from '../hooks/useWorkItems';
 import { workItemsApi } from '../api/client';
 import { StatusBadge } from '../components/StatusBadge';

@@ -1,0 +1,39 @@
+{
+  "team": "TheInspector",
+  "next_run_number": 2,
+  "runs": {
+    "run-20260327-011657": {
+      "number": 1,
+      "pipeline": {
+        "id": "run-20260327-011657",
+        "status": "complete",
+        "started_at": "2026-03-27T01:16:57Z",
+        "task_title": "Post-work audit: Pipeline Optimisations (TheFixer cycle)",
+        "completed_at": "2026-03-27T01:27:10Z"
+      },
+      "stages": [],
+      "agents": {
+        "team_leader": {
+          "status": "complete",
+          "started_at": "2026-03-27T01:16:57Z",
+          "name": "Team Leader",
+          "model": "sonnet",
+          "completed_at": "2026-03-27T01:27:10Z",
+          "duration_s": 613,
+          "verdict": "passed",
+          "metrics": {
+            "grade": "D",
+            "p1_total": 7,
+            "p2_total": 16,
+            "p3_total": 20,
+            "p4_total": 10,
+            "total_findings": 53,
+            "spec_coverage": 100
+          }
+        }
+      },
+      "feedback_loops": [],
+      "updated_at": "2026-03-27T01:27:10Z"
+    }
+  }
+}

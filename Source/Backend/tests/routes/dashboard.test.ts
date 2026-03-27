@@ -33,6 +33,15 @@ describe('GET /api/dashboard/summary', () => {
     expect(res.body.priorityCounts).toBeDefined();
     expect(res.body.statusCounts.backlog).toBe(2);
   });
+
+  // Verifies: FR-WF-007 — Summary includes total count
+  it('returns total item count', async () => {
+    await request(app).post('/api/work-items').send(validBody);
+    await request(app).post('/api/work-items').send(validBody);
+
+    const res = await request(app).get('/api/dashboard/summary');
+    expect(res.body.total).toBe(2);
+  });
 });
 
 describe('GET /api/dashboard/activity', () => {
@@ -46,13 +55,18 @@ describe('GET /api/dashboard/activity', () => {
     expect(res.body.data[0].workItemDocId).toBeDefined();
   });
 
-  it('supports pagination', async () => {
+  it('supports pagination with metadata', async () => {
     for (let i = 0; i < 5; i++) {
       await request(app).post('/api/work-items').send(validBody);
     }
     const res = await request(app).get('/api/dashboard/activity?page=1&limit=2');
     expect(res.status).toBe(200);
     expect(res.body.data).toHaveLength(2);
+    // Verifies: FR-WF-007 — Activity pagination metadata
+    expect(res.body.total).toBe(5);
+    expect(res.body.page).toBe(1);
+    expect(res.body.limit).toBe(2);
+    expect(res.body.totalPages).toBe(3);
   });
 });
 

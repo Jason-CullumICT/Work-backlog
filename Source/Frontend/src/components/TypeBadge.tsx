@@ -1,7 +1,7 @@
 // Verifies: FR-WF-010 (type display in work item list)
 
 import React from 'react';
-import { WorkItemType } from '../../../Shared/types/workflow';
+import { WorkItemType } from '@shared/types/workflow';
 
 const TYPE_COLORS: Record<WorkItemType, string> = {
   [WorkItemType.Feature]: '#8b5cf6',

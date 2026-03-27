@@ -46,6 +46,24 @@ describe('POST /api/intake/zendesk', () => {
       .send({ description: 'No title' });
     expect(res.status).toBe(400);
   });
+
+  // Verifies: FR-WF-008 — Reject invalid type enum values
+  it('returns 400 for invalid type', async () => {
+    const res = await request(app)
+      .post('/api/intake/zendesk')
+      .send({ title: 'Ticket', description: 'Desc', type: 'invalid' });
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe('Invalid type value');
+  });
+
+  // Verifies: FR-WF-008 — Reject invalid priority enum values
+  it('returns 400 for invalid priority', async () => {
+    const res = await request(app)
+      .post('/api/intake/zendesk')
+      .send({ title: 'Ticket', description: 'Desc', priority: 'invalid' });
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe('Invalid priority value');
+  });
 });
 
 describe('POST /api/intake/automated', () => {
@@ -65,5 +83,23 @@ describe('POST /api/intake/automated', () => {
       .post('/api/intake/automated')
       .send({ title: 'No desc' });
     expect(res.status).toBe(400);
+  });
+
+  // Verifies: FR-WF-008 — Reject invalid type enum values
+  it('returns 400 for invalid type', async () => {
+    const res = await request(app)
+      .post('/api/intake/automated')
+      .send({ title: 'Event', description: 'Desc', type: 'invalid' });
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe('Invalid type value');
+  });
+
+  // Verifies: FR-WF-008 — Reject invalid priority enum values
+  it('returns 400 for invalid priority', async () => {
+    const res = await request(app)
+      .post('/api/intake/automated')
+      .send({ title: 'Event', description: 'Desc', priority: 'invalid' });
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe('Invalid priority value');
   });
 });

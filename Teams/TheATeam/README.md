@@ -16,7 +16,7 @@ A quality-focused agent team with maximum parallelism, shared API contracts, tes
 | `qa-review-and-tests` | sonnet | Runs tests + coverage + test quality grading + FR coverage verification | No (1) |
 | `design-critic` | sonnet | Multimodal Reviewer -- visual comparison against design specs | No (1) |
 | `integration-reviewer` | haiku | Code review + smoke testing + visual validation | No (1) |
-| `traceability-reporter` | sonnet | Generates FR traceability report | No (1) |
+| `traceability-reporter` | **haiku** | Generates FR traceability report | No (1) |
 | `visual-playwright` | sonnet | Ephemeral Playwright visual validation -- writes throwaway browser tests | No (1) |
 
 ### Scalable Roles
@@ -59,7 +59,7 @@ Coders (backend and frontend) can be **scaled up** based on complexity-weighted 
    +-----------------------------+                  |
    | Chaos Tester       [sonnet] |                  v
    | Security QA        [sonnet] |           TIER 2 (sequential)
-   | Traceability       [sonnet] |           +-----------------------------+
+   | Traceability       [haiku]  |           +-----------------------------+
    | E2E Playwright     [sonnet] |           | QA Review & Tests  [sonnet] |
    +-----------------------------+           +-------------+---------------+
                                                            v

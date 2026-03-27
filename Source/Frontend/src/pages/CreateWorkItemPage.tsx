@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { WorkItemType, WorkItemPriority, WorkItemSource } from '../../../Shared/types/workflow';
-import type { CreateWorkItemRequest } from '../../../Shared/types/workflow';
+import { WorkItemType, WorkItemPriority, WorkItemSource } from '@shared/types/workflow';
+import type { CreateWorkItemRequest } from '@shared/types/workflow';
 import { workItemsApi } from '../api/client';
 
 interface FormErrors {

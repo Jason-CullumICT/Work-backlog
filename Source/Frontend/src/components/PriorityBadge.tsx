@@ -1,7 +1,7 @@
 // Verifies: FR-WF-010, FR-WF-011 (priority display for work items)
 
 import React from 'react';
-import { WorkItemPriority } from '../../../Shared/types/workflow';
+import { WorkItemPriority } from '@shared/types/workflow';
 
 const PRIORITY_COLORS: Record<WorkItemPriority, string> = {
   [WorkItemPriority.Critical]: '#dc2626',

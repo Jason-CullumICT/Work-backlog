@@ -39,9 +39,18 @@ describe('DashboardService', () => {
 
     it('returns empty counts when no items exist', () => {
       const summary = getSummary();
+      expect(summary.total).toBe(0);
       expect(summary.statusCounts).toEqual({});
       expect(summary.teamCounts).toEqual({});
       expect(summary.priorityCounts).toEqual({});
+    });
+
+    // Verifies: FR-WF-007 — Summary includes total count
+    it('returns total item count', () => {
+      createWorkItem(defaultParams);
+      createWorkItem(defaultParams);
+      const summary = getSummary();
+      expect(summary.total).toBe(2);
     });
   });
 
@@ -56,12 +65,17 @@ describe('DashboardService', () => {
       expect(activity.data[0].workItemDocId).toBeDefined();
     });
 
-    it('paginates results', () => {
+    it('paginates results with metadata', () => {
       for (let i = 0; i < 5; i++) {
         createWorkItem(defaultParams);
       }
       const page1 = getActivity(1, 2);
       expect(page1.data.length).toBe(2);
+      // Verifies: FR-WF-007 — Activity pagination metadata
+      expect(page1.total).toBe(5);
+      expect(page1.page).toBe(1);
+      expect(page1.limit).toBe(2);
+      expect(page1.totalPages).toBe(3);
     });
   });
 

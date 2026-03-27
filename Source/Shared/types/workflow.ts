@@ -143,6 +143,7 @@ export interface PaginatedWorkItemsResponse {
 }
 
 export interface DashboardSummaryResponse {
+  total: number;
   statusCounts: Record<string, number>;
   teamCounts: Record<string, number>;
   priorityCounts: Record<string, number>;
@@ -150,6 +151,10 @@ export interface DashboardSummaryResponse {
 
 export interface DashboardActivityResponse {
   data: (ChangeHistoryEntry & { workItemId: string; workItemDocId: string })[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 export interface DashboardQueueResponse {

@@ -4,6 +4,20 @@
 **Model:** sonnet (Multimodal)
 **Tier:** 2 (Sequential, needs ports and browser)
 
+## Prerequisites
+
+Before running any Playwright browser commands, check if Chromium is already installed to avoid redundant downloads:
+
+```bash
+if npx playwright install --dry-run chromium 2>&1 | grep -q "already installed"; then
+  echo "Chromium already present, skipping install"
+else
+  npx playwright install chromium
+fi
+```
+
+Skip the install step if running in a Docker image that pre-bundles Playwright browsers.
+
 ## Role
 
 Visual validation engineer using vision-capable models to compare the running UI against design specifications and wireframes.

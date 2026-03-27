@@ -71,6 +71,8 @@ Stage 2: api-contract                   (1 agent, wait for completion)
           |
 Stage 3: backend-coder + frontend-coder (parallel, wait for BOTH)
           |
+Stage 3.9: early-commit                  (team leader checkpoint)
+          |
 Stage 4 -- Tier 1 (parallel, UNCONDITIONAL, read-only + mocked):
           chaos-tester
           security-qa
@@ -144,6 +146,18 @@ Use the Scoping Plan from Stage 1 to spawn the required number of coder instance
 4. Group by file proximity -- FRs touching same files go to same coder
 5. No coder should have >2x the points of another
 
+### 4.5. Stage 3.9 -- Early Commit Checkpoint
+
+After all coders complete successfully, commit and push implementation to the remote before starting QA. This prevents work loss if the pipeline times out during validation.
+
+```bash
+git add -A Source/
+git commit -m "wip: ${TASK_TITLE} [pipeline-checkpoint]"
+git push
+```
+
+This is a checkpoint operation — the commit will be squashed into the final commit after QA passes.
+
 ### 5. Stage 4 -- Review & QA (UNCONDITIONAL)
 
 Stage 4 is unconditional -- ALL verification agents MUST be spawned on every run, regardless of scope.
@@ -164,8 +178,13 @@ Spawn all in parallel:
 
 After ALL Stage 4 agents complete, check verdicts:
 - Maximum **2 feedback iterations** total
-- Only re-run the coder(s) whose layer is affected
+- **Scope to the failed layer only:**
+  1. Parse the rejecting agent's feedback to identify affected layer(s)
+  2. If feedback references only backend files/tests/services → re-run backend-coder(s) only
+  3. If feedback references only frontend files/tests/components → re-run frontend-coder(s) only
+  4. If feedback references both layers or is ambiguous → re-run both
 - Include FULL feedback text from the rejecting agent
+- Do NOT re-run coders for layers that passed all QA checks
 
 ### 7. Completion
 - Update pipeline status
@@ -189,6 +208,7 @@ Use --run {RUN_ID} for all pipeline-update.sh calls.
 
 ## Important Rules
 
+- **Always run TheInspector** for TheATeam cycles -- TheATeam handles greenfield features which are always high-risk
 - **Never skip QA stages** -- even if coders report 100% tests passing
 - **Never modify agent outputs** -- pass feedback verbatim to coders on retry
 - **Always update the dashboard state file** between stages

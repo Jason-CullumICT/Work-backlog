@@ -1,4 +1,5 @@
 // Verifies: FR-WF-001 — Work Item store tests
+import * as fs from 'fs';
 import {
   createWorkItem,
   findById,
@@ -6,6 +7,8 @@ import {
   updateWorkItem,
   softDelete,
   resetStore,
+  loadFromFile,
+  getPersistencePath,
 } from '../../src/store/workItemStore';
 import {
   WorkItemType,
@@ -16,6 +19,11 @@ import {
 
 beforeEach(() => {
   resetStore();
+  // Clean up persistence file between tests
+  const persistPath = getPersistencePath();
+  if (fs.existsSync(persistPath)) {
+    fs.unlinkSync(persistPath);
+  }
 });
 
 describe('WorkItemStore', () => {
@@ -95,12 +103,47 @@ describe('WorkItemStore', () => {
     });
   });
 
-  // Verifies: FR-WF-001 — Update work item
+  // Verifies: FR-WF-001 — Input validation
+  describe('input validation', () => {
+    it('rejects empty title', () => {
+      expect(() => createWorkItem({ ...defaultParams, title: '' })).toThrow('title is required');
+    });
+
+    it('rejects whitespace-only title', () => {
+      expect(() => createWorkItem({ ...defaultParams, title: '   ' })).toThrow('title is required');
+    });
+
+    it('rejects empty description', () => {
+      expect(() => createWorkItem({ ...defaultParams, description: '' })).toThrow('description is required');
+    });
+  });
+
+  // Verifies: FR-WF-001 — Update work item with change tracking
   describe('updateWorkItem', () => {
     it('updates fields', () => {
       const item = createWorkItem(defaultParams);
       const updated = updateWorkItem(item.id, { title: 'Updated' });
       expect(updated?.title).toBe('Updated');
+    });
+
+    // Verifies: FR-WF-003 — Change history on update
+    it('tracks field changes in changeHistory', () => {
+      const item = createWorkItem(defaultParams);
+      const historyBefore = item.changeHistory.length;
+      const updated = updateWorkItem(item.id, { title: 'New Title', priority: WorkItemPriority.High });
+      expect(updated!.changeHistory.length).toBe(historyBefore + 2);
+      const titleChange = updated!.changeHistory.find(
+        (e) => e.field === 'title' && e.newValue === 'New Title',
+      );
+      expect(titleChange).toBeDefined();
+      expect(titleChange!.oldValue).toBe('Test item');
+    });
+
+    it('does not add history entry when value is unchanged', () => {
+      const item = createWorkItem(defaultParams);
+      const historyBefore = item.changeHistory.length;
+      const updated = updateWorkItem(item.id, { title: item.title });
+      expect(updated!.changeHistory.length).toBe(historyBefore);
     });
 
     it('returns undefined for non-existent item', () => {
@@ -118,6 +161,42 @@ describe('WorkItemStore', () => {
 
     it('returns false for non-existent item', () => {
       expect(softDelete('fake')).toBe(false);
+    });
+  });
+
+  // Verifies: FR-WF-001 — File persistence
+  describe('file persistence', () => {
+    it('persists items to file on create', () => {
+      createWorkItem(defaultParams);
+      const persistPath = getPersistencePath();
+      expect(fs.existsSync(persistPath)).toBe(true);
+      const raw = JSON.parse(fs.readFileSync(persistPath, 'utf-8'));
+      expect(raw.items).toHaveLength(1);
+      expect(raw.docIdCounter).toBe(1);
+    });
+
+    it('loads items from file after reset', () => {
+      const item = createWorkItem(defaultParams);
+      const id = item.id;
+      resetStore();
+      expect(findById(id)).toBeUndefined();
+      const loaded = loadFromFile();
+      expect(loaded).toBe(true);
+      expect(findById(id)).toBeDefined();
+      expect(findById(id)!.title).toBe('Test item');
+    });
+
+    it('returns false when no persistence file exists', () => {
+      expect(loadFromFile()).toBe(false);
+    });
+
+    it('preserves docId counter across load', () => {
+      createWorkItem(defaultParams);
+      createWorkItem(defaultParams);
+      resetStore();
+      loadFromFile();
+      const next = createWorkItem(defaultParams);
+      expect(next.docId).toBe('WI-003');
     });
   });
 });

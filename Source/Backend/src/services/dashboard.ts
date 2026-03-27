@@ -25,10 +25,10 @@ export function getSummary(): DashboardSummaryResponse {
     }
   }
 
-  return { statusCounts, teamCounts, priorityCounts };
+  return { total: items.length, statusCounts, teamCounts, priorityCounts };
 }
 
-// Verifies: FR-WF-007 — Recent activity across all work items
+// Verifies: FR-WF-007 — Recent activity across all work items (paginated)
 export function getActivity(page: number = 1, limit: number = 20): DashboardActivityResponse {
   const items = getAllItems();
 
@@ -47,10 +47,12 @@ export function getActivity(page: number = 1, limit: number = 20): DashboardActi
   // Sort by timestamp descending
   allEntries.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
+  const total = allEntries.length;
+  const totalPages = Math.max(1, Math.ceil(total / limit));
   const offset = (page - 1) * limit;
   const data = allEntries.slice(offset, offset + limit);
 
-  return { data };
+  return { data, total, page, limit, totalPages };
 }
 
 // Verifies: FR-WF-007 — Items grouped by status queue

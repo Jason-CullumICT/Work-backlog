@@ -6,8 +6,8 @@ import {
   WorkItemStatus,
   WorkItemType,
   WorkItemPriority,
-} from '../../../Shared/types/workflow';
-import type { WorkItemFilters, PaginationParams } from '../../../Shared/types/workflow';
+} from '@shared/types/workflow';
+import type { WorkItemFilters, PaginationParams } from '@shared/types/workflow';
 import { useWorkItems } from '../hooks/useWorkItems';
 import { StatusBadge } from '../components/StatusBadge';
 import { PriorityBadge } from '../components/PriorityBadge';

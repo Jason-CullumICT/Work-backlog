@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TheInspector Audit Report — 2026-03-27</title>
+<style>
+  :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --muted: #8b949e;
+    --red: #f85149; --orange: #d29922; --yellow: #e3b341; --green: #3fb950; --blue: #58a6ff;
+    --p1: #f85149; --p2: #d29922; --p3: #e3b341; --p4: #8b949e; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 1200px; margin: 0 auto; }
+  h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+  h2 { font-size: 1.4rem; margin: 2rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+  h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; }
+  h4 { font-size: 1rem; margin: 1rem 0 0.3rem; }
+  .badge { display: inline-block; padding: 0.3rem 1rem; border-radius: 6px; font-size: 2rem; font-weight: 700; }
+  .badge-d { background: var(--orange); color: #000; }
+  .header-meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 1rem; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+  .scorecard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+  .scorecard { text-align: center; }
+  .scorecard .number { font-size: 2rem; font-weight: 700; }
+  .scorecard .label { color: var(--muted); font-size: 0.8rem; text-transform: uppercase; }
+  table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-size: 0.9rem; }
+  th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+  .sev-p1 { color: var(--p1); font-weight: 700; }
+  .sev-p2 { color: var(--p2); font-weight: 700; }
+  .sev-p3 { color: var(--p3); }
+  .sev-p4 { color: var(--p4); }
+  .finding-card { border-left: 4px solid var(--border); padding-left: 1rem; margin-bottom: 1.5rem; }
+  .finding-card.p1 { border-left-color: var(--p1); }
+  .finding-card.p2 { border-left-color: var(--p2); }
+  .tag { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 3px; font-size: 0.75rem; margin-right: 0.3rem; }
+  .tag-new { background: var(--blue); color: #000; }
+  .tag-specialist { background: var(--border); color: var(--text); }
+  .risk-matrix { display: grid; grid-template-columns: 80px repeat(5, 1fr); gap: 2px; }
+  .risk-cell { padding: 0.4rem; text-align: center; font-size: 0.75rem; background: var(--card); border: 1px solid var(--border); }
+  .risk-header { font-weight: 700; color: var(--muted); font-size: 0.7rem; }
+  .risk-hot { background: #3d1214; color: var(--p1); }
+  .risk-warm { background: #3d2e0a; color: var(--p2); }
+  .risk-cool { background: #2a2d14; color: var(--p3); }
+  .coverage-bar { height: 20px; border-radius: 4px; overflow: hidden; background: var(--border); }
+  .coverage-fill { height: 100%; background: var(--green); }
+  .rec-block { background: #1c1210; border-left: 4px solid var(--p1); }
+  .rec-sprint { background: #1c1a10; border-left: 4px solid var(--p2); }
+  .rec-next { background: #141c10; border-left: 4px solid var(--p3); }
+  .rec-backlog { border-left: 4px solid var(--p4); }
+  code { background: var(--card); padding: 0.1rem 0.3rem; border-radius: 3px; font-size: 0.85em; }
+  .green-card { border-left-color: var(--green); background: #0d1f0d; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 1: HEADER                                          -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="card">
+  <span class="badge badge-d">D</span>
+  <h1>TheInspector Audit Report</h1>
+  <div class="header-meta">
+    Branch: <code>cycle/run-1774572910837-a438fded</code> &nbsp;|&nbsp;
+    Date: 2026-03-27 &nbsp;|&nbsp;
+    Mode: Full codebase (first audit — no baseline) &nbsp;|&nbsp;
+    Scope: 25 Source files + 5 Teams files
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 2: SCORECARDS                                      -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>2. Scorecards</h2>
+<div class="scorecard-grid">
+  <div class="card scorecard"><div class="number sev-p1">7</div><div class="label">P1 Critical</div></div>
+  <div class="card scorecard"><div class="number sev-p2">16</div><div class="label">P2 High</div></div>
+  <div class="card scorecard"><div class="number sev-p3">20</div><div class="label">P3 Medium</div></div>
+  <div class="card scorecard"><div class="number sev-p4">10</div><div class="label">P4 Low</div></div>
+  <div class="card scorecard"><div class="number" style="color:var(--green)">100%</div><div class="label">Spec Coverage</div></div>
+  <div class="card scorecard"><div class="number" style="color:var(--muted)">0</div><div class="label">Dynamic Tests</div></div>
+  <div class="card scorecard"><div class="number" style="color:var(--muted)">0</div><div class="label">Fixed (no baseline)</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 3: EXECUTIVE SUMMARY                               -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>3. Executive Summary</h2>
+<div class="card">
+  <ol>
+    <li><strong>Zero authentication/authorization on the entire API surface (RED-001).</strong> Every endpoint — including state-transition actions, data creation, deletion, and the Prometheus metrics endpoint — is accessible to any network-reachable client without credentials. This is the single most impactful finding and cascades into 5+ related findings.</li>
+    <li><strong>Persistence layer never loads from disk on restart (CHAOS-002).</strong> <code>loadFromFile()</code> is exported but never called in <code>app.ts</code>. Every backend restart loses all work items. The file-based store also uses synchronous I/O (PERF-003), blocking the event loop on every write.</li>
+    <li><strong>Prometheus metric label cardinality explosion (PERF-001).</strong> The HTTP histogram middleware uses raw request paths (including UUIDs) as the <code>route</code> label, creating unbounded time series that will OOM Prometheus at any meaningful scale.</li>
+    <li><strong>Missing error handling in route handlers (CHAOS-001, CHAOS-009).</strong> Intake webhook routes and CRUD routes lack try/catch, meaning store errors will crash the Express process rather than returning error responses.</li>
+    <li><strong>No input validation or size limits (RED-005, RED-008).</strong> Free-text fields accept unlimited-length strings, pagination accepts unbounded <code>limit</code> values, and the <code>overrideRoute</code> parameter bypasses the entire assessment pipeline without authorization.</li>
+  </ol>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 4: SCOPE & ENVIRONMENT                             -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>4. Scope &amp; Environment</h2>
+<div class="card">
+  <table>
+    <tr><th>Item</th><th>Value</th></tr>
+    <tr><td>Branch</td><td><code>cycle/run-1774572910837-a438fded</code></td></tr>
+    <tr><td>Source files audited</td><td>25 modified (8 backend src, 5 backend tests, 11 frontend, 1 shared)</td></tr>
+    <tr><td>Teams files audited</td><td>5 modified (pipeline optimisations)</td></tr>
+    <tr><td>Backend service</td><td>DOWN — static analysis only</td></tr>
+    <tr><td>Frontend service</td><td>Not configured — static analysis only</td></tr>
+    <tr><td>Dynamic tests run</td><td>0 (all services down)</td></tr>
+    <tr><td>Prior audit</td><td>None — first audit, no baseline for comparison</td></tr>
+  </table>
+  <h4>Specialist Modes &amp; Durations</h4>
+  <table>
+    <tr><th>Specialist</th><th>Mode</th><th>Findings</th></tr>
+    <tr><td>red-teamer</td><td>Static</td><td>16</td></tr>
+    <tr><td>quality-oracle</td><td>Static</td><td>7</td></tr>
+    <tr><td>performance-profiler</td><td>Static</td><td>11</td></tr>
+    <tr><td>chaos-monkey</td><td>Static</td><td>12</td></tr>
+    <tr><td>dependency-auditor</td><td>Static</td><td>7</td></tr>
+  </table>
+  <p style="color:var(--muted);margin-top:0.5rem"><strong>Caveats:</strong> All analysis is static. No dynamic endpoint testing, load testing, or fault injection was performed. Latency baselines are estimated, not measured. Dependency audit relied on installed <code>node_modules</code>.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 5: TREND                                           -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>5. Trend</h2>
+<div class="card">
+  <p>First audit — no baseline. All findings are classified as <span class="tag tag-new">NEW</span>.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 6: SPECIALIST REPORTS                              -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>6. Specialist Reports</h2>
+
+<div class="card">
+  <h3>red-teamer</h3>
+  <table>
+    <tr><td>Mode</td><td>Static</td></tr>
+    <tr><td>Verdict</td><td class="sev-p1">FAILED</td></tr>
+    <tr><td>Findings</td><td><span class="sev-p1">3 P1</span>, <span class="sev-p2">5 P2</span>, <span class="sev-p3">6 P3</span>, <span class="sev-p4">2 P4</span></td></tr>
+  </table>
+</div>
+<div class="card">
+  <h3>quality-oracle</h3>
+  <table>
+    <tr><td>Mode</td><td>Static</td></tr>
+    <tr><td>Verdict</td><td class="sev-p3">WARNING</td></tr>
+    <tr><td>Findings</td><td><span class="sev-p3">4 P3</span>, <span class="sev-p4">3 P4</span></td></tr>
+    <tr><td>Spec Coverage</td><td>100% (13/13 FRs)</td></tr>
+    <tr><td>Traceability Enforcer</td><td style="color:var(--green)">PASSED</td></tr>
+  </table>
+</div>
+<div class="card">
+  <h3>performance-profiler</h3>
+  <table>
+    <tr><td>Mode</td><td>Static</td></tr>
+    <tr><td>Verdict</td><td class="sev-p1">FAILED</td></tr>
+    <tr><td>Findings</td><td><span class="sev-p1">2 P1</span>, <span class="sev-p2">4 P2</span>, <span class="sev-p3">5 P3</span></td></tr>
+  </table>
+</div>
+<div class="card">
+  <h3>chaos-monkey</h3>
+  <table>
+    <tr><td>Mode</td><td>Static</td></tr>
+    <tr><td>Verdict</td><td class="sev-p1">FAILED</td></tr>
+    <tr><td>Findings</td><td><span class="sev-p1">2 P1</span>, <span class="sev-p2">5 P2</span>, <span class="sev-p3">3 P3</span>, <span class="sev-p4">2 P4</span></td></tr>
+  </table>
+</div>
+<div class="card">
+  <h3>dependency-auditor</h3>
+  <table>
+    <tr><td>Mode</td><td>Static</td></tr>
+    <tr><td>Verdict</td><td class="sev-p3">WARNING</td></tr>
+    <tr><td>Findings</td><td><span class="sev-p2">2 P2</span>, <span class="sev-p3">2 P3</span>, <span class="sev-p4">3 P4</span></td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 7: RE-VERIFICATION SUMMARY                         -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>7. Re-Verification Summary</h2>
+<div class="card">
+  <p>First audit — no prior findings to re-verify. All 53 findings are <span class="tag tag-new">NEW</span>.</p>
+  <table>
+    <tr><th>Status</th><th>Count</th></tr>
+    <tr><td style="color:var(--green)">FIXED</td><td>0</td></tr>
+    <tr><td style="color:var(--yellow)">STILL OPEN</td><td>0</td></tr>
+    <tr><td style="color:var(--red)">REGRESSED</td><td>0</td></tr>
+    <tr><td style="color:var(--blue)">NEW</td><td>53</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 8: CROSS-REFERENCE MAP                             -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>8. Cross-Reference Map</h2>
+<div class="card">
+  <table>
+    <tr><th>Root Cause</th><th>Affected Findings</th><th>Fix Impact</th></tr>
+    <tr>
+      <td><strong>No authentication/authorization layer</strong></td>
+      <td>RED-001, RED-002, RED-003, RED-004, RED-007, RED-010, RED-011, RED-012</td>
+      <td>Adding auth middleware + RBAC resolves 8 findings (3 P1, 3 P2, 2 P3). Single highest-leverage fix.</td>
+    </tr>
+    <tr>
+      <td><strong>Naive file persistence (sync I/O, no load, no atomic write)</strong></td>
+      <td>PERF-003, PERF-007, CHAOS-002, CHAOS-003, CHAOS-004</td>
+      <td>Rewriting persistence to async + atomic writes + startup load resolves 5 findings (2 P1, 3 P2).</td>
+    </tr>
+    <tr>
+      <td><strong>Missing error handling in route handlers</strong></td>
+      <td>CHAOS-001, CHAOS-009, CHAOS-011</td>
+      <td>Adding try/catch to all route handlers resolves 3 findings (1 P1, 2 P2).</td>
+    </tr>
+    <tr>
+      <td><strong>No input validation/size limits</strong></td>
+      <td>RED-005, RED-006, RED-008, RED-013, PERF-011</td>
+      <td>Adding a validation layer (Zod/Joi) + body size limits resolves 5 findings (3 P2, 2 P3).</td>
+    </tr>
+    <tr>
+      <td><strong>Unbounded data operations (no pagination limits, full scans)</strong></td>
+      <td>PERF-004, PERF-005, PERF-006, PERF-008</td>
+      <td>Adding query optimization + cached counters + per-group limits resolves 4 findings (3 P2, 1 P3).</td>
+    </tr>
+    <tr>
+      <td><strong>Metrics architecture lacks constraints</strong></td>
+      <td>PERF-001, PERF-002, RED-003</td>
+      <td>Route label normalization + metrics endpoint auth resolves 3 findings (1 P1, 1 P3, 1 P3).</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 9: P1 FINDINGS (EXPANDED)                          -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>9. P1 Findings</h2>
+
+<div class="finding-card p1">
+  <h4>RED-001 — All API endpoints have zero authentication <span class="tag tag-new">NEW</span> <span class="tag tag-specialist">red-teamer</span></h4>
+  <p><strong>File:</strong> <code>Source/Backend/src/app.ts</code></p>
+  <p><strong>Exploit:</strong> Any network-reachable client can call every endpoint — CRUD, workflow actions, dashboard, metrics — without credentials.</p>
+  <p><strong>Impact:</strong> Full data read/write/delete. The entire workflow system is compromised.</p>
+  <p><strong>Recommendation:</strong> Implement auth middleware (JWT/session) before all <code>/api/*</code> routes. Add RBAC for state-transition endpoints.</p>
+</div>
+
+<div class="finding-card p1">
+  <h4>RED-002 — Intake webhooks have no origin verification <span class="tag tag-new">NEW</span> <span class="tag tag-specialist">red-teamer</span></h4>
+  <p><strong>File:</strong> <code>Source/Backend/src/routes/intake.ts:26-89</code></p>
+  <p><strong>Exploit:</strong> Any client can POST to <code>/api/intake/zendesk</code> and inject arbitrary work items into the pipeline.</p>
+  <p><strong>Impact:</strong> Workflow injection — fake work items proceed through the full pipeline.</p>
+  <p><strong>Recommendation:</strong> Validate Zendesk <code>X-Zendesk-Webhook-Signature-256</code> HMAC. Require bearer token for <code>/automated</code>.</p>
+</div>
+
+<div class="finding-card p1">
+  <h4>RED-003 — Prometheus /metrics publicly accessible <span class="tag tag-new">NEW</span> <span class="tag tag-specialist">red-teamer</span></h4>
+  <p><strong>File:</strong> <code>Source/Backend/src/app.ts:44-47</code></p>
+  <p><strong>Exploit:</strong> <code>GET /metrics</code> exposes route structure, team names, throughput, and Node.js internals.</p>
+  <p><strong>Impact:</strong> Information disclosure enabling fingerprinting and targeted attacks.</p>
+  <p><strong>Recommendation:</strong> Expose on a separate internal port or add bearer-token auth.</p>
+</div>
+
+<div class="finding-card p1">
+  <h4>PERF-001 — High-cardinality route label in HTTP histogram <span class="tag tag-new">NEW</span> <span class="tag tag-specialist">performance-profiler</span></h4>
+  <p><strong>File:</strong> <code>Source/Backend/src/app.ts:22-29</code>, <code>Source/Backend/src/metrics.ts:10-16</code></p>
+  <p><strong>Exploit:</strong> <code>req.path</code> includes concrete UUIDs as route label values. Each unique ID = new time series × 6 buckets.</p>
+  <p><strong>Impact:</strong> Prometheus OOM at ~10,000 unique paths. Production-threatening.</p>
+  <p><strong>Recommendation:</strong> Use <code>req.route?.path</code> (Express pattern) or <code>'unknown'</code> for 404s. Never use <code>req.path</code> as a label.</p>
+</div>
+
+<div class="finding-card p1">
+  <h4>PERF-003 — Synchronous file I/O on every write operation <span class="tag tag-new">NEW</span> <span class="tag tag-specialist">performance-profiler</span></h4>
+  <p><strong>File:</strong> <code>Source/Backend/src/store/workItemStore.ts:20-34</code></p>
+  <p><strong>Exploit:</strong> <code>fs.writeFileSync</code> blocks the event loop on every create/update/delete. All concurrent requests are queued.</p>
+  <p><strong>Impact:</strong> p95 latency spikes beyond 500ms budget under any concurrency. Fundamental Node.js model violation.</p>
+  <p><strong>Recommendation:</strong> Replace with <code>fs.promises.writeFile</code>. Add write debouncing.</p>
+</div>
+
+<div class="finding-card p1">
+  <h4>CHAOS-001 — Intake routes have no try/catch <span class="tag tag-new">NEW</span> <span class="tag tag-specialist">chaos-monkey</span></h4>
+  <p><strong>File:</strong> <code>Source/Backend/src/routes/intake.ts:44, 77</code></p>
+  <p><strong>Exploit:</strong> Store errors (validation, persistence) throw unhandled exceptions that crash the Express process.</p>
+  <p><strong>Impact:</strong> All webhook intake endpoints become unavailable. Incoming events are lost.</p>
+  <p><strong>Recommendation:</strong> Wrap route bodies in try/catch. Return 500 on unexpected errors.</p>
+</div>
+
+<div class="finding-card p1">
+  <h4>CHAOS-002 — loadFromFile is never called — store starts empty after restart <span class="tag tag-new">NEW</span> <span class="tag tag-specialist">chaos-monkey</span></h4>
+  <p><strong>File:</strong> <code>Source/Backend/src/app.ts</code>, <code>Source/Backend/src/store/workItemStore.ts:37</code></p>
+  <p><strong>Exploit:</strong> <code>loadFromFile()</code> exists but is never called in <code>app.ts</code>. All data vanishes on restart.</p>
+  <p><strong>Impact:</strong> Complete data loss from user's perspective after any restart. File on disk is intact but unused.</p>
+  <p><strong>Recommendation:</strong> Call <code>loadFromFile()</code> in <code>app.ts</code> before the server starts listening.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 10: RISK MATRIX                                    -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>10. Risk Matrix</h2>
+<div class="card">
+  <div class="risk-matrix">
+    <div class="risk-cell risk-header"></div>
+    <div class="risk-cell risk-header">Zero-precond.</div>
+    <div class="risk-cell risk-header">Authenticated</div>
+    <div class="risk-cell risk-header">Privileged</div>
+    <div class="risk-cell risk-header">Admin</div>
+    <div class="risk-cell risk-header">Physical</div>
+
+    <div class="risk-cell risk-header">P1</div>
+    <div class="risk-cell risk-hot">RED-001<br>RED-002<br>RED-003<br>CHAOS-001<br>CHAOS-002<br>PERF-001<br>PERF-003</div>
+    <div class="risk-cell">—</div>
+    <div class="risk-cell">—</div>
+    <div class="risk-cell">—</div>
+    <div class="risk-cell">—</div>
+
+    <div class="risk-cell risk-header">P2</div>
+    <div class="risk-cell risk-warm">RED-004<br>RED-005<br>RED-006<br>RED-007<br>RED-008</div>
+    <div class="risk-cell risk-warm">CHAOS-006<br>CHAOS-009</div>
+    <div class="risk-cell">DEP-001<br>DEP-005</div>
+    <div class="risk-cell">CHAOS-003<br>CHAOS-004</div>
+    <div class="risk-cell">—</div>
+
+    <div class="risk-cell risk-header">P3</div>
+    <div class="risk-cell risk-cool">RED-009<br>RED-010<br>RED-011<br>RED-012<br>RED-013</div>
+    <div class="risk-cell risk-cool">CHAOS-005<br>CHAOS-007<br>CHAOS-008</div>
+    <div class="risk-cell risk-cool">PERF-002<br>PERF-008<br>PERF-009<br>PERF-010<br>PERF-011</div>
+    <div class="risk-cell risk-cool">RED-014<br>QA-001<br>QA-002<br>QA-003<br>QA-004</div>
+    <div class="risk-cell">—</div>
+
+    <div class="risk-cell risk-header">P4</div>
+    <div class="risk-cell">RED-015<br>RED-016</div>
+    <div class="risk-cell">CHAOS-010<br>CHAOS-012</div>
+    <div class="risk-cell">QA-005<br>QA-006<br>QA-007</div>
+    <div class="risk-cell">DEP-006<br>DEP-007<br>DEP-008</div>
+    <div class="risk-cell">—</div>
+  </div>
+  <p style="color:var(--muted);margin-top:0.5rem;font-size:0.8rem">All 7 P1 findings sit in the zero-precondition column — exploitable by any network-reachable client without authentication.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 11: SPEC COVERAGE                                  -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>11. Spec Coverage</h2>
+<div class="card">
+  <p><strong>100%</strong> — 13 of 13 FRs have at least one <code>// Verifies: FR-WF-XXX</code> reference in Source/</p>
+  <div class="coverage-bar"><div class="coverage-fill" style="width:100%"></div></div>
+  <p style="margin-top:0.5rem">Traceability enforcer: <span style="color:var(--green)">PASSED</span></p>
+  <table>
+    <tr><th>FR</th><th>Description</th><th>Source</th><th>Test</th></tr>
+    <tr><td>FR-WF-001</td><td>Work Item data model and in-memory store</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
+    <tr><td>FR-WF-002</td><td>Work Item CRUD API endpoints</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
+    <tr><td>FR-WF-003</td><td>Change history tracking</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
+    <tr><td>FR-WF-004</td><td>Work Router service</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
+    <tr><td>FR-WF-005</td><td>Assessment Pod service</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
+    <tr><td>FR-WF-006</td><td>Workflow action endpoints</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
+    <tr><td>FR-WF-007</td><td>Dashboard API endpoints</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
+    <tr><td>FR-WF-008</td><td>Intake webhook endpoints</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
+    <tr><td>FR-WF-009</td><td>Dashboard page</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
+    <tr><td>FR-WF-010</td><td>Work Item list page</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
+    <tr><td>FR-WF-011</td><td>Work Item detail page</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
+    <tr><td>FR-WF-012</td><td>Create Work Item form</td><td style="color:var(--green)">✓</td><td style="color:var(--green)">✓</td></tr>
+    <tr><td>FR-WF-013</td><td>Observability: logging and metrics</td><td style="color:var(--green)">✓</td><td style="color:var(--muted)">implicit</td></tr>
+  </table>
+  <p style="margin-top:0.5rem;color:var(--muted)">Top uncovered requirements: None — all 13 FRs are covered.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 12: LATENCY BASELINES                              -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>12. Latency Baselines</h2>
+<div class="card">
+  <p><strong>N/A — dynamic testing unavailable</strong> (backend DOWN)</p>
+  <table>
+    <tr><th>Endpoint</th><th>p50</th><th>p95</th><th>p99</th><th>Budget (p95)</th><th>Status</th></tr>
+    <tr><td colspan="6" style="color:var(--muted);text-align:center">No dynamic measurements — estimates only</td></tr>
+    <tr><td><code>GET /api/dashboard/queue</code></td><td>~10ms</td><td>~50ms*</td><td>~200ms*</td><td>500ms</td><td style="color:var(--muted)">estimated</td></tr>
+    <tr><td><code>GET /api/dashboard/activity</code></td><td>~20ms</td><td>~100ms*</td><td>~500ms*</td><td>500ms</td><td style="color:var(--orange)">⚠ at scale</td></tr>
+    <tr><td><code>POST /api/work-items</code></td><td>~5ms</td><td>~50ms*</td><td>~200ms*</td><td>500ms</td><td style="color:var(--orange)">⚠ sync I/O</td></tr>
+  </table>
+  <p style="color:var(--muted);font-size:0.8rem;margin-top:0.5rem">*Estimates assume ~100 items. At 1,000+ items, PERF-003 (sync I/O) and PERF-004/005/006 (full scans) will breach budgets. Prior audit: N/A (first audit).</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 13: P2 FINDINGS                                    -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>13. P2 Findings</h2>
+<div class="card">
+  <table>
+    <tr><th>ID</th><th>Category</th><th>Title</th><th>File</th><th>Status</th></tr>
+    <tr><td class="sev-p2">RED-004</td><td>Access Control</td><td>Unguarded approve/dispatch workflow actions</td><td><code>routes/workflow.ts</code></td><td><span class="tag tag-new">NEW</span></td></tr>
+    <tr><td class="sev-p2">RED-005</td><td>Injection</td><td>No input length limits on free-text fields</td><td><code>routes/intake.ts</code></td><td><span class="tag tag-new">NEW</span></td></tr>
+    <tr><td class="sev-p2">RED-006</td><td>Injection</td><td>Unsanitized route param in error response</td><td><code>routes/workflow.ts</code></td><td><span class="tag tag-new">NEW</span></td></tr>
+    <tr><td class="sev-p2">RED-007</td><td>Injection</td><td>overrideRoute bypasses assessment pipeline</td><td><code>routes/workflow.ts, services/router.ts</code></td><td><span class="tag tag-new">NEW</span></td></tr>
+    <tr><td class="sev-p2">RED-008</td><td>Injection</td><td>Unbounded pagination parameters</td><td><code>routes/workItems.ts, routes/dashboard.ts</code></td><td><span class="tag tag-new">NEW</span></td></tr>
+    <tr><td class="sev-p2">PERF-004</td><td>Performance</td><td>getActivity full scan before pagination</td><td><code>services/dashboard.ts:32-56</code></td><td><span class="tag tag-new">NEW</span></td></tr>
+    <tr><td class="sev-p2">PERF-005</td><td>Performance</td><td>getQueue returns full item objects, no limit</td><td><code>services/dashboard.ts:59-78</code></td><td><span class="tag tag-new">NEW</span></td></tr>
+    <tr><td class="sev-p2">PERF-006</td><td>Performance</td><td>findAll full table scan with Date parsing sort</td><td><code>store/workItemStore.ts:75-109</code></td><td><span class="tag tag-new">NEW</span></td></tr>
+    <tr><td class="sev-p2">PERF-007</td><td>Performance</td><td>persistToFile JSON grows unboundedly</td><td><code>store/workItemStore.ts:26-33</code></td><td><span class="tag tag-new">NEW</span></td></tr>
+    <tr><td class="sev-p2">CHAOS-003</td><td>Resilience</td><td>persistToFile silently swallows disk errors</td><td><code>store/workItemStore.ts:20-34</code></td><td><span class="tag tag-new">NEW</span></td></tr>
+    <tr><td class="sev-p2">CHAOS-004</td><td>Resilience</td><td>loadFromFile loads unvalidated JSON</td><td><code>store/workItemStore.ts:40-43</code></td><td><span class="tag tag-new">NEW</span></td></tr>
+    <tr><td class="sev-p2">CHAOS-006</td><td>Resilience</td><td>Frontend fetch has no timeout</td><td><code>api/client.ts:20-32</code></td><td><span class="tag tag-new">NEW</span></td></tr>
+    <tr><td class="sev-p2">CHAOS-009</td><td>Resilience</td><td>CRUD routes have no try/catch</td><td><code>routes/workItems.ts:20-137</code></td><td><span class="tag tag-new">NEW</span></td></tr>
+    <tr><td class="sev-p2">CHAOS-011</td><td>Resilience</td><td>Dashboard service unguarded sort</td><td><code>services/dashboard.ts:13,32,59</code></td><td><span class="tag tag-new">NEW</span></td></tr>
+    <tr><td class="sev-p2">DEP-001</td><td>Dependency</td><td>esbuild CORS bypass in dev server</td><td><code>Frontend/package.json (vite)</code></td><td><span class="tag tag-new">NEW</span></td></tr>
+    <tr><td class="sev-p2">DEP-005</td><td>Dependency</td><td>path-to-regexp 0.x unmaintained branch</td><td><code>Backend/package.json (express)</code></td><td><span class="tag tag-new">NEW</span></td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 14: FIXED FINDINGS                                 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>14. Fixed Findings</h2>
+<div class="card green-card finding-card">
+  <p>None — first audit, no prior findings to verify as fixed.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 15: RECOMMENDATIONS                                -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>15. Recommendations</h2>
+
+<div class="card rec-block">
+  <h4 style="color:var(--p1)">🛑 Block Deployment</h4>
+  <ol>
+    <li><strong>Implement authentication middleware</strong> — JWT or session-based auth on all <code>/api/*</code> routes. Resolves RED-001, cascades to RED-003, RED-004, RED-010. (<em>Highest leverage fix — resolves 8 findings</em>)</li>
+    <li><strong>Add webhook HMAC verification</strong> — Validate <code>X-Zendesk-Webhook-Signature-256</code> on intake endpoints. Resolves RED-002.</li>
+    <li><strong>Call <code>loadFromFile()</code> on startup</strong> — Add to <code>app.ts</code> before server listen. Resolves CHAOS-002 (data loss on restart).</li>
+    <li><strong>Add try/catch to all route handlers</strong> — Intake, CRUD, dashboard routes. Resolves CHAOS-001, CHAOS-009, CHAOS-011.</li>
+    <li><strong>Fix metric route label cardinality</strong> — Use <code>req.route?.path</code> pattern, not <code>req.path</code>. Resolves PERF-001.</li>
+  </ol>
+</div>
+
+<div class="card rec-sprint">
+  <h4 style="color:var(--p2)">⚡ This Sprint</h4>
+  <ol>
+    <li><strong>Replace <code>writeFileSync</code> with async I/O</strong> + write debouncing. Resolves PERF-003, PERF-007.</li>
+    <li><strong>Add input validation layer</strong> — Zod/Joi schemas for all request bodies. Clamp field lengths, pagination limits. Resolves RED-005, RED-006, RED-008, RED-013.</li>
+    <li><strong>Guard <code>overrideRoute</code></strong> — Require admin role or remove from public API. Resolves RED-007.</li>
+    <li><strong>Add request timeout to frontend fetch</strong> — Thread <code>AbortController</code> signal. Resolves CHAOS-006.</li>
+    <li><strong>Optimize dashboard queries</strong> — Add pagination to queue, pre-sort activity log. Resolves PERF-004, PERF-005.</li>
+  </ol>
+</div>
+
+<div class="card rec-next">
+  <h4 style="color:var(--p3)">📋 Next Sprint</h4>
+  <ol>
+    <li>Add CORS middleware with explicit origin allowlist (RED-011)</li>
+    <li>Unify logger interface — single import path (QA-003)</li>
+    <li>Add unit tests for <code>utils/logger.ts</code> (QA-004)</li>
+    <li>Implement <code>fastTrack</code> field consumption in router (QA-001)</li>
+    <li>Add atomic file writes (write-to-tmp + rename) (CHAOS-004)</li>
+    <li>Cache findAll sort + counters for O(1) summary (PERF-006, PERF-008)</li>
+    <li>Upgrade vite/vitest to resolve esbuild CORS (DEP-001)</li>
+  </ol>
+</div>
+
+<div class="card rec-backlog">
+  <h4 style="color:var(--p4)">📝 Backlog</h4>
+  <ol>
+    <li>Generic error messages externally, detailed logs server-side (RED-012)</li>
+    <li>Move <code>resetStore()</code> to test-only module (RED-016)</li>
+    <li>Content-Type header only on methods with body (RED-015)</li>
+    <li>Cache LOG_LEVEL at module init (PERF-009)</li>
+    <li>Plan Express 5.x migration (DEP-005)</li>
+    <li>Document <code>npm ci --omit=dev</code> in build pipeline (DEP-006)</li>
+  </ol>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SECTION 16: P3/P4 SUMMARY                                  -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<h2>16. P3/P4 Summary</h2>
+<div class="card">
+  <table>
+    <tr><th>ID</th><th>Sev</th><th>Specialist</th><th>Title</th></tr>
+    <tr><td>RED-009</td><td class="sev-p3">P3</td><td>red-teamer</td><td>Predictable/sequential work item docIds</td></tr>
+    <tr><td>RED-010</td><td class="sev-p3">P3</td><td>red-teamer</td><td>Dashboard exposes full system state, no auth</td></tr>
+    <tr><td>RED-011</td><td class="sev-p3">P3</td><td>red-teamer</td><td>No CORS policy configured</td></tr>
+    <tr><td>RED-012</td><td class="sev-p3">P3</td><td>red-teamer</td><td>Error messages leak internal state</td></tr>
+    <tr><td>RED-013</td><td class="sev-p3">P3</td><td>red-teamer</td><td>Unbounded reason field in reject/fail/requeue</td></tr>
+    <tr><td>RED-014</td><td class="sev-p3">P3</td><td>red-teamer</td><td>File persistence path controllable via env var</td></tr>
+    <tr><td>QA-001</td><td class="sev-p3">P3</td><td>quality-oracle</td><td>fastTrack field defined but never consumed</td></tr>
+    <tr><td>QA-002</td><td class="sev-p3">P3</td><td>quality-oracle</td><td>Fast-track improvement uses heuristic, not spec</td></tr>
+    <tr><td>QA-003</td><td class="sev-p3">P3</td><td>quality-oracle</td><td>Dual logger interface in backend</td></tr>
+    <tr><td>QA-004</td><td class="sev-p3">P3</td><td>quality-oracle</td><td>No unit tests for utils/logger.ts</td></tr>
+    <tr><td>PERF-002</td><td class="sev-p3">P3</td><td>perf-profiler</td><td>status_code label type concern</td></tr>
+    <tr><td>PERF-008</td><td class="sev-p3">P3</td><td>perf-profiler</td><td>getSummary triggers full store scan</td></tr>
+    <tr><td>PERF-009</td><td class="sev-p3">P3</td><td>perf-profiler</td><td>Logger reads LOG_LEVEL on every emit</td></tr>
+    <tr><td>PERF-010</td><td class="sev-p3">P3</td><td>perf-profiler</td><td>Redundant changeHistory pass-through pattern</td></tr>
+    <tr><td>PERF-011</td><td class="sev-p3">P3</td><td>perf-profiler</td><td>No explicit body size limits</td></tr>
+    <tr><td>CHAOS-005</td><td class="sev-p3">P3</td><td>chaos-monkey</td><td>NaN pagination silently returns empty results</td></tr>
+    <tr><td>CHAOS-007</td><td class="sev-p3">P3</td><td>chaos-monkey</td><td>Dashboard renders partially with null data</td></tr>
+    <tr><td>CHAOS-008</td><td class="sev-p3">P3</td><td>chaos-monkey</td><td>WorkItemDetailPage uses non-null assertion on id</td></tr>
+    <tr><td>DEP-002</td><td class="sev-p3">P3</td><td>dep-auditor</td><td>brace-expansion ReDoS (dev only)</td></tr>
+    <tr><td>DEP-003</td><td class="sev-p3">P3</td><td>dep-auditor</td><td>Handlebars prototype pollution (dev only)</td></tr>
+    <tr><td>RED-015</td><td class="sev-p4">P4</td><td>red-teamer</td><td>Content-Type set on GET requests</td></tr>
+    <tr><td>RED-016</td><td class="sev-p4">P4</td><td>red-teamer</td><td>resetStore() exported from production module</td></tr>
+    <tr><td>QA-005</td><td class="sev-p4">P4</td><td>quality-oracle</td><td>Frontend test modification tracking gap</td></tr>
+    <tr><td>QA-006</td><td class="sev-p4">P4</td><td>quality-oracle</td><td>client.ts traceability comments incomplete</td></tr>
+    <tr><td>QA-007</td><td class="sev-p4">P4</td><td>quality-oracle</td><td>TypeBadge.tsx missing FR-WF-011 trace comment</td></tr>
+    <tr><td>CHAOS-010</td><td class="sev-p4">P4</td><td>chaos-monkey</td><td>Error handler uses non-standard field names</td></tr>
+    <tr><td>CHAOS-012</td><td class="sev-p4">P4</td><td>chaos-monkey</td><td>CreateWorkItemPage submitting state not reset</td></tr>
+    <tr><td>DEP-004</td><td class="sev-p4">P4</td><td>dep-auditor</td><td>vitest/vite-node esbuild chain (duplicate of DEP-001)</td></tr>
+    <tr><td>DEP-006</td><td class="sev-p4">P4</td><td>dep-auditor</td><td>No documented --omit=dev in build pipeline</td></tr>
+    <tr><td>DEP-007</td><td class="sev-p4">P4</td><td>dep-auditor</td><td>exit package missing license metadata</td></tr>
+  </table>
+</div>
+
+<hr style="margin-top:3rem;border-color:var(--border)">
+<p style="color:var(--muted);font-size:0.8rem;text-align:center;margin-top:1rem">
+  Generated by TheInspector | Audit date: 2026-03-27 | Branch: cycle/run-1774572910837-a438fded | Grade: D
+</p>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+{
+  "docIdCounter": 2,
+  "items": [
+    [
+      "de741be8-a729-47e0-918a-6474ac9b04a4",
+      {
+        "id": "de741be8-a729-47e0-918a-6474ac9b04a4",
+        "docId": "WI-001",
+        "title": "Test",
+        "description": "Desc",
+        "type": "feature",
+        "status": "backlog",
+        "priority": "medium",
+        "source": "browser",
+        "changeHistory": [
+          {
+            "timestamp": "2026-03-27T01:30:16.471Z",
+            "agent": "system",
+            "field": "status",
+            "oldValue": null,
+            "newValue": "backlog",
+            "reason": "Work item created"
+          }
+        ],
+        "assessments": [],
+        "createdAt": "2026-03-27T01:30:16.471Z",
+        "updatedAt": "2026-03-27T01:30:16.471Z"
+      }
+    ],
+    [
+      "4f97aaba-ee71-4a47-a142-bd6b9f326a44",
+      {
+        "id": "4f97aaba-ee71-4a47-a142-bd6b9f326a44",
+        "docId": "WI-002",
+        "title": "Test",
+        "description": "Desc",
+        "type": "feature",
+        "status": "backlog",
+        "priority": "medium",
+        "source": "browser",
+        "changeHistory": [
+          {
+            "timestamp": "2026-03-27T01:30:16.471Z",
+            "agent": "system",
+            "field": "status",
+            "oldValue": null,
+            "newValue": "backlog",
+            "reason": "Work item created"
+          }
+        ],
+        "assessments": [],
+        "createdAt": "2026-03-27T01:30:16.471Z",
+        "updatedAt": "2026-03-27T01:30:16.471Z"
+      }
+    ]
+  ]
+}

@@ -309,4 +309,165 @@ describe('Workflow Action Endpoints', () => {
       expect(res.status).toBe(404);
     });
   });
+
+  describe('POST /api/work-items/:id/complete', () => {
+    // Verifies: FR-WF-006 — Complete an in-progress item
+    it('should complete an in-progress item', async () => {
+      const item = createTestItem();
+      store.updateWorkItem(item.id, { status: WorkItemStatus.InProgress, assignedTeam: 'TheATeam' });
+
+      const res = await request(app)
+        .post(`/api/work-items/${item.id}/complete`)
+        .send({});
+
+      expect(res.status).toBe(200);
+      expect(res.body.status).toBe(WorkItemStatus.Completed);
+    });
+
+    // Verifies: FR-WF-006 — 400 for non in-progress status
+    it('should return 400 when completing a non in-progress item', async () => {
+      const item = createTestItem();
+
+      const res = await request(app)
+        .post(`/api/work-items/${item.id}/complete`)
+        .send({});
+
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain('Cannot complete');
+    });
+
+    it('should return 404 for non-existent item', async () => {
+      const res = await request(app)
+        .post('/api/work-items/non-existent/complete')
+        .send({});
+
+      expect(res.status).toBe(404);
+    });
+  });
+
+  describe('POST /api/work-items/:id/fail', () => {
+    // Verifies: FR-WF-006 — Fail an in-progress item
+    it('should fail an in-progress item', async () => {
+      const item = createTestItem();
+      store.updateWorkItem(item.id, { status: WorkItemStatus.InProgress, assignedTeam: 'TheFixer' });
+
+      const res = await request(app)
+        .post(`/api/work-items/${item.id}/fail`)
+        .send({ reason: 'Tests failed' });
+
+      expect(res.status).toBe(200);
+      expect(res.body.status).toBe(WorkItemStatus.Failed);
+    });
+
+    // Verifies: FR-WF-006 — Fail without explicit reason uses default
+    it('should fail with default reason when none provided', async () => {
+      const item = createTestItem();
+      store.updateWorkItem(item.id, { status: WorkItemStatus.InProgress });
+
+      const res = await request(app)
+        .post(`/api/work-items/${item.id}/fail`)
+        .send({});
+
+      expect(res.status).toBe(200);
+      expect(res.body.status).toBe(WorkItemStatus.Failed);
+    });
+
+    // Verifies: FR-WF-006 — 400 for non in-progress status
+    it('should return 400 when failing a non in-progress item', async () => {
+      const item = createTestItem();
+
+      const res = await request(app)
+        .post(`/api/work-items/${item.id}/fail`)
+        .send({});
+
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain('Cannot fail');
+    });
+
+    it('should return 404 for non-existent item', async () => {
+      const res = await request(app)
+        .post('/api/work-items/non-existent/fail')
+        .send({});
+
+      expect(res.status).toBe(404);
+    });
+  });
+
+  describe('POST /api/work-items/:id/requeue', () => {
+    // Verifies: FR-WF-006 — Requeue a rejected item back to backlog
+    it('should requeue a rejected item to backlog', async () => {
+      const item = createTestItem();
+      store.updateWorkItem(item.id, { status: WorkItemStatus.Rejected });
+
+      const res = await request(app)
+        .post(`/api/work-items/${item.id}/requeue`)
+        .send({ reason: 'Updated requirements' });
+
+      expect(res.status).toBe(200);
+      expect(res.body.status).toBe(WorkItemStatus.Backlog);
+    });
+
+    // Verifies: FR-WF-006 — Requeue a failed item back to backlog
+    it('should requeue a failed item to backlog', async () => {
+      const item = createTestItem();
+      store.updateWorkItem(item.id, { status: WorkItemStatus.Failed });
+
+      const res = await request(app)
+        .post(`/api/work-items/${item.id}/requeue`)
+        .send({});
+
+      expect(res.status).toBe(200);
+      expect(res.body.status).toBe(WorkItemStatus.Backlog);
+    });
+
+    // Verifies: FR-WF-006 — Requeue clears route and assignedTeam
+    it('should clear route and assignedTeam on requeue', async () => {
+      const item = createTestItem();
+      store.updateWorkItem(item.id, {
+        status: WorkItemStatus.Failed,
+        route: WorkItemRoute.FastTrack,
+        assignedTeam: 'TheFixer',
+      });
+
+      const res = await request(app)
+        .post(`/api/work-items/${item.id}/requeue`)
+        .send({});
+
+      expect(res.status).toBe(200);
+      expect(res.body.route).toBeUndefined();
+      expect(res.body.assignedTeam).toBeUndefined();
+    });
+
+    // Verifies: FR-WF-006 — 400 for invalid status
+    it('should return 400 when requeuing an in-progress item', async () => {
+      const item = createTestItem();
+      store.updateWorkItem(item.id, { status: WorkItemStatus.InProgress });
+
+      const res = await request(app)
+        .post(`/api/work-items/${item.id}/requeue`)
+        .send({});
+
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain('Cannot requeue');
+    });
+
+    // Verifies: FR-WF-006 — 400 for backlog item (already in backlog)
+    it('should return 400 when requeuing a backlog item', async () => {
+      const item = createTestItem();
+
+      const res = await request(app)
+        .post(`/api/work-items/${item.id}/requeue`)
+        .send({});
+
+      expect(res.status).toBe(400);
+    });
+
+    it('should return 404 for non-existent item', async () => {
+      const res = await request(app)
+        .post('/api/work-items/non-existent/requeue')
+        .send({});
+
+      expect(res.status).toBe(404);
+    });
+  });
 });

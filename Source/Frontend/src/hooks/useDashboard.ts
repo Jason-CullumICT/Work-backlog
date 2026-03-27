@@ -1,12 +1,15 @@
-// Verifies: FR-WF-009 (data fetching for dashboard page)
+// Verifies: FR-WF-009 (data fetching for dashboard page with auto-refresh)
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type {
   DashboardSummaryResponse,
   DashboardActivityResponse,
   DashboardQueueResponse,
-} from '../../../Shared/types/workflow';
+} from '@shared/types/workflow';
 import { dashboardApi } from '../api/client';
+
+// Verifies: FR-WF-009 — Auto-refresh interval (30 seconds)
+const AUTO_REFRESH_INTERVAL_MS = 30_000;
 
 interface UseDashboardResult {
   summary: DashboardSummaryResponse | null;
@@ -24,11 +27,16 @@ export function useDashboard(): UseDashboardResult {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const abortRef = useRef<AbortController | null>(null);
 
   const refresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
   useEffect(() => {
-    let cancelled = false;
+    // Verifies: FR-WF-009 — Abort in-flight requests on re-fetch to avoid wasted network resources
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     setLoading(true);
     setError(null);
 
@@ -38,7 +46,7 @@ export function useDashboard(): UseDashboardResult {
       dashboardApi.queue(),
     ])
       .then(([summaryRes, activityRes, queueRes]) => {
-        if (!cancelled) {
+        if (!controller.signal.aborted) {
           setSummary(summaryRes);
           setActivity(activityRes);
           setQueue(queueRes);
@@ -46,16 +54,25 @@ export function useDashboard(): UseDashboardResult {
         }
       })
       .catch((err: Error) => {
-        if (!cancelled) {
+        if (!controller.signal.aborted) {
           setError(err.message);
           setLoading(false);
         }
       });
 
     return () => {
-      cancelled = true;
+      controller.abort();
     };
   }, [refreshKey]);
+
+  // Verifies: FR-WF-009 — Auto-refresh interval for dashboard data
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRefreshKey((k) => k + 1);
+    }, AUTO_REFRESH_INTERVAL_MS);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return { summary, activity, queue, loading, error, refresh };
 }

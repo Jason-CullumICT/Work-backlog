@@ -11,10 +11,12 @@ import type {
   CreateWorkItemRequest,
   RejectWorkItemRequest,
   DispatchWorkItemRequest,
-} from '../../../Shared/types/workflow';
+  UpdateWorkItemRequest,
+} from '@shared/types/workflow';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '/api';
 
+// Verifies: FR-WF-002 — Centralised fetch with AbortSignal support and correct error field
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
     headers: { 'Content-Type': 'application/json' },
@@ -22,7 +24,8 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   });
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
-    throw new Error(body.message ?? `Request failed: ${response.status}`);
+    // Verifies: FR-WF-013 — API error responses use {error: "message"} pattern
+    throw new Error(body.error ?? `Request failed: ${response.status}`);
   }
   if (response.status === 204) return undefined as T;
   return response.json();
@@ -64,6 +67,16 @@ export const workItemsApi = {
 
   dispatch(id: string, data: DispatchWorkItemRequest): Promise<WorkItem> {
     return request(`/work-items/${id}/dispatch`, { method: 'POST', body: JSON.stringify(data) });
+  },
+
+  // Verifies: FR-WF-002 — PATCH /api/work-items/:id
+  update(id: string, data: UpdateWorkItemRequest): Promise<WorkItem> {
+    return request(`/work-items/${id}`, { method: 'PATCH', body: JSON.stringify(data) });
+  },
+
+  // Verifies: FR-WF-002 — DELETE /api/work-items/:id (soft delete, 204)
+  delete(id: string): Promise<void> {
+    return request(`/work-items/${id}`, { method: 'DELETE' });
   },
 };
 

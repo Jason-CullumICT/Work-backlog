@@ -5,7 +5,7 @@ import workflowRouter from './routes/workflow';
 import dashboardRouter from './routes/dashboard';
 import intakeRouter from './routes/intake';
 import { errorHandler } from './middleware/errorHandler';
-import { registry } from './metrics';
+import { registry, httpRequestDuration } from './metrics';
 import logger from './logger';
 
 const app = express();
@@ -15,6 +15,16 @@ app.use(express.json());
 // Verifies: FR-WF-013 — Request logging middleware
 app.use((req, _res, next) => {
   logger.debug({ msg: 'Incoming request', method: req.method, url: req.url });
+  next();
+});
+
+// Verifies: FR-WF-013 — Auto-collect route latency via histogram middleware
+app.use((req, res, next) => {
+  const end = httpRequestDuration.startTimer();
+  res.on('finish', () => {
+    const route = req.route?.path || req.path;
+    end({ method: req.method, route, status_code: res.statusCode });
+  });
   next();
 });
 

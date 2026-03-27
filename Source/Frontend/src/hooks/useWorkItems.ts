@@ -1,13 +1,13 @@
 // Verifies: FR-WF-010 (data fetching for work item list)
 // Verifies: FR-WF-011 (data fetching for work item detail)
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type {
   WorkItem,
   PaginatedWorkItemsResponse,
   WorkItemFilters,
   PaginationParams,
-} from '../../../Shared/types/workflow';
+} from '@shared/types/workflow';
 import { workItemsApi } from '../api/client';
 
 interface UseWorkItemsResult {
@@ -34,31 +34,36 @@ export function useWorkItems(
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const abortRef = useRef<AbortController | null>(null);
 
   const refresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
   useEffect(() => {
-    let cancelled = false;
+    // Verifies: FR-WF-010 — Abort in-flight requests on filter/page change to avoid wasted resources
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     setLoading(true);
     setError(null);
 
     workItemsApi
       .list(filters)
       .then((res) => {
-        if (!cancelled) {
+        if (!controller.signal.aborted) {
           setResult(res);
           setLoading(false);
         }
       })
       .catch((err: Error) => {
-        if (!cancelled) {
+        if (!controller.signal.aborted) {
           setError(err.message);
           setLoading(false);
         }
       });
 
     return () => {
-      cancelled = true;
+      controller.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -86,31 +91,36 @@ export function useWorkItem(id: string): UseWorkItemResult {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const abortRef = useRef<AbortController | null>(null);
 
   const refresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
   useEffect(() => {
-    let cancelled = false;
+    // Verifies: FR-WF-011 — Abort in-flight requests on id change
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     setLoading(true);
     setError(null);
 
     workItemsApi
       .getById(id)
       .then((res) => {
-        if (!cancelled) {
+        if (!controller.signal.aborted) {
           setItem(res);
           setLoading(false);
         }
       })
       .catch((err: Error) => {
-        if (!cancelled) {
+        if (!controller.signal.aborted) {
           setError(err.message);
           setLoading(false);
         }
       });
 
     return () => {
-      cancelled = true;
+      controller.abort();
     };
   }, [id, refreshKey]);
 
