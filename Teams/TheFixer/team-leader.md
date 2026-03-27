@@ -74,6 +74,8 @@ Stage 1: planner                        (1 agent, wait for completion)
           |
 Stage 2: backend-fixer + frontend-fixer (parallel, based on planner scope)
           |                             (Up to 5 fix cycles each)
+Stage 2.9: early-commit                  (team leader checkpoint)
+          |
 Stage 3: Tier 1 (parallel, UNCONDITIONAL):
           chaos-tester
           verify-reporter               <- MANDATORY
@@ -125,6 +127,18 @@ Based on `scope_tag`:
 | `backend-only` | backend-fixer only |
 | `frontend-only` | frontend-fixer only |
 
+### 3.5. Stage 2.9 -- Early Commit Checkpoint
+
+After all fixers complete successfully, commit and push to the remote before starting verification. This prevents work loss if the pipeline times out during validation.
+
+```bash
+git add -A Source/
+git commit -m "wip: ${TASK_TITLE} [pipeline-checkpoint]"
+git push
+```
+
+This is a checkpoint operation — the commit will be squashed into the final commit after verification passes.
+
 ### 4. Stage 3 -- Verification (Parallel, UNCONDITIONAL)
 
 Stage 3 is unconditional -- ALL verification agents MUST be spawned on every run.
@@ -140,8 +154,25 @@ Tier 2 (sequential, after Tier 1):
 
 ### 5. Feedback Loop Handling
 - Maximum **2 feedback iterations**
-- Only re-run affected fixer(s)
+- **Scope to the failed layer only:**
+  1. Parse the rejecting agent's feedback to identify affected layer(s)
+  2. If feedback references only backend files/tests/services → re-run backend-fixer(s) only
+  3. If feedback references only frontend files/tests/components → re-run frontend-fixer(s) only
+  4. If feedback references both layers or is ambiguous → re-run both
 - Include FULL feedback text from failing agent
+- Do NOT re-run fixers for layers that passed all verification checks
+
+### 5.5. Conditional Inspector Dispatch
+
+TheInspector audit is conditional for TheFixer cycles to save time on low-risk changes:
+
+| Condition | Action |
+|-----------|--------|
+| planner.confidence == `high` AND scope_tag IN [`backend-only`, `frontend-only`] | **Skip** Inspector |
+| planner.confidence == `low` OR scope_tag == `fullstack` | **Run** full Inspector audit |
+| Any QA agent verdict is `rejected` after feedback loops exhausted | **Run** full Inspector audit |
+
+When skipping Inspector, log the decision: "Inspector skipped: low-risk TheFixer cycle (confidence={confidence}, scope={scope_tag})"
 
 ### 6. Completion
 - Update pipeline status

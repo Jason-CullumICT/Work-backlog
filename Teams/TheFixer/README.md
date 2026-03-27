@@ -11,7 +11,7 @@ A lean agent team optimized for **bug fixes and changes to existing code**. Mirr
 | `backend-fixer` | sonnet | Applies backend/shared fixes, updates tests, runs suite, smoke tests, 5 fix cycles | **Yes** |
 | `frontend-fixer` | sonnet | Applies frontend fixes, updates tests, runs suite, wiring audit, 5 fix cycles | **Yes** |
 | `chaos-tester` | sonnet | Adversarial Agent -- attempts to break domain invariants | No (1) |
-| `verify-reporter` | sonnet | Independent test run, smoke tests, generates traceability report | No (1) |
+| `verify-reporter` | **haiku** | Independent test run, smoke tests, generates traceability report | No (1) |
 | `design-critic` | sonnet | Multimodal Reviewer -- visual comparison against design specs | No (1) |
 | `visual-playwright` | sonnet | Ephemeral Playwright visual validation -- scoped to the fix | No (1) |
 | `security-spotter` | **haiku** | Read-only security spot-check on changed files | No (1) |
@@ -45,7 +45,7 @@ Fixers scale based on complexity-weighted issue points (S=1, M=2, L=4, XL=8):
           +--------+----------+---------+----------+
           v                  v          v          v
   E2E Playwright      Verify & Report  Security   Chaos Tester
-     [sonnet]            [sonnet]      Spotter    [sonnet]
+     [sonnet]            [haiku]       Spotter    [sonnet]
   Ephemeral visual    Job 1: Test      [haiku]    Adversarial
   validation          Job 2: Smoke     Spot-check invariant
                       Job 3: Trace     on diff    testing
